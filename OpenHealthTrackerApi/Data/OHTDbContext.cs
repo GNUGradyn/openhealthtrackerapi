@@ -1,10 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OpenHealthTrackerApi.Data.Models;
 
 namespace OpenHealthTrackerApi.Data;
 
 public class OHTDbContext : DbContext
 {
     private IConfiguration _config;
+    
+    public DbSet<Activity> Activities { get; set; }
+    public DbSet<Emotion> Emotions { get; set; }
+    public DbSet<JournalEntry> JournalEntries { get; set; }
+    public DbSet<User> Users { get; set; }
 
     public OHTDbContext(IConfiguration config)
     {
