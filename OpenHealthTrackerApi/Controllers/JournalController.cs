@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using OpenHealthTrackerApi.Data.Models;
+using OpenHealthTrackerApi.Models;
 
 namespace OpenHealthTrackerApi.Controllers;
 
@@ -7,10 +10,10 @@ namespace OpenHealthTrackerApi.Controllers;
 [Authorize]
 public class JournalController : ControllerBase
 {
-    [HttpGet, HttpPost]
+    [HttpPost]
     [Route("entry")]
-    public async Task<IActionResult> CreateEntry()
+    public async Task<IActionResult> CreateEntry([FromBody] JournalEntryRequest request)
     {
-        return new ContentResult() { StatusCode = 204 };
+
     }
 }
