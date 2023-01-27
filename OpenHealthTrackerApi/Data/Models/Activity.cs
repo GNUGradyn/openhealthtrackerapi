@@ -12,8 +12,7 @@ public class Activity
     [Column("Name")]
     public string Name { get; set; }
     
-    [Column("UserId")]
-    public int UserId { get; set; }
+    [Column("User")]
+    public Guid User { get; set; }
     
-    public User User { get; set; }
 }

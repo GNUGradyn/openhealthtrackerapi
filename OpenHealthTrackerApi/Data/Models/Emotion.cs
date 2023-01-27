@@ -12,8 +12,6 @@ public class Emotion
     [Column("Name")]
     public string Name { get; set; }
     
-    [Column("UserId")]
-    public int UserId { get; set; }
-    
-    public User User { get; set; }
+    [Column("User")]
+    public Guid UserId { get; set; }
 }
