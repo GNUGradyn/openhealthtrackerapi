@@ -5,7 +5,7 @@ namespace OpenHealthTrackerApi.Controllers;
 
 [Route("journal")]
 [Authorize]
-public class JournalController
+public class JournalController : ControllerBase
 {
     [HttpGet, HttpPost]
     [Route("entry")]
