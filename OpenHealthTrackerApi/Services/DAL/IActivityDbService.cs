@@ -4,5 +4,5 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public interface IActivityDbService
 {
-    Task<Activity[]> GetActivitiesByIdsAsync(int[] ids);
+    Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids);
 }

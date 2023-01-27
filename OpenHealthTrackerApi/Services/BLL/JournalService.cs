@@ -16,7 +16,7 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
-    public async Task CreateEntry(string text, int[] emotionIds, int[] activityIds, Guid user)
+    public async Task CreateEntry(string text, int[]? emotionIds, int[]? activityIds, Guid user)
     {
         Emotion[] emotions;
         // handle emotions

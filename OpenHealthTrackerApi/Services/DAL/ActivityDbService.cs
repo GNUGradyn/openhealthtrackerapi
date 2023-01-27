@@ -13,8 +13,9 @@ public class ActivityDbService : IActivityDbService
         _dbFactory = dbFactory;
     }
 
-    public async Task<Activity[]> GetActivitiesByIdsAsync(int[] ids)
+    public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids)
     {
+        if (ids == null) return Array.Empty<Activity>();
         using (var db = _dbFactory.OHT())
         {
             var activities = await db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();

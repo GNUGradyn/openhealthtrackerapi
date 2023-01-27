@@ -29,6 +29,6 @@ public class JournalController : ControllerBase
 
     private Guid getUserGuid()
     {
-        return new Guid(User.Claims.Single(x => x.Type == ClaimTypes.Actor).Value);
+        return new Guid(User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 }

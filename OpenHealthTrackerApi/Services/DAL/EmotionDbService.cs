@@ -13,8 +13,9 @@ public class EmotionDbService : IEmotionDbService
         _dbFactory = dbFactory;
     }
 
-    public async Task<Emotion[]> GetEmotionsByIdsAsync(int[] ids)
+    public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids)
     {
+        if (ids == null) return Array.Empty<Emotion>();
         using (var db = _dbFactory.OHT())
         {
             var emotions = await db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();

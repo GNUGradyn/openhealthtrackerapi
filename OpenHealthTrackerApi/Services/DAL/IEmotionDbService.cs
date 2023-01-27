@@ -4,5 +4,5 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public interface IEmotionDbService
 {
-    Task<Emotion[]> GetEmotionsByIdsAsync(int[] ids);
+    Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids);
 }

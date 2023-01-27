@@ -3,6 +3,6 @@
 public class JournalEntryRequest
 {
     public string Text;
-    public int[] Emotions;
-    public int[] Activities;
+    public int[]? Emotions;
+    public int[]? Activities;
 }
