@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("appsettings.json");
 
 // Add services to the container.
 
@@ -15,13 +18,17 @@ builder.Services.AddAuthentication(options =>
         options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
     })
     .AddCookie()
-    .AddOpenIdConnect(o =>
+    .AddOpenIdConnect(options =>
     {
-        o.ClientId = builder.Configuration.GetValue<string>("IdentityStore:ClientId");
-        o.ClientSecret = builder.Configuration.GetValue<string>("IdentityStore:ClientSecret");
-        o.Authority = builder.Configuration.GetValue<string>("IdentityStore:Authority");
-        o.GetClaimsFromUserInfoEndpoint = true;
-        o.RequireHttpsMetadata = true;
+        options.ClientId = builder.Configuration.GetValue<string>("IdentityStore:ClientId");
+        options.ClientSecret = builder.Configuration.GetValue<string>("IdentityStore:ClientSecret");
+        options.Authority = builder.Configuration.GetValue<string>("IdentityStore:Authority");
+        options.GetClaimsFromUserInfoEndpoint = true;
+        options.RequireHttpsMetadata = true;
+        options.Scope.Add("openid");
+        options.Scope.Add("profile");
+        options.SaveTokens = true;
+        options.ResponseType = OpenIdConnectResponseType.Code;
     });
 
 var app = builder.Build();
@@ -32,9 +39,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
