@@ -6,7 +6,7 @@ namespace OpenHealthTrackerApi.Controllers;
 [Route("journal")]
 public class JournalController
 {
-    [HttpPost]
+    [HttpGet, HttpPost]
     [Route("entry")]
     [Authorize]
     public async Task<IActionResult> CreateEntry()
