@@ -31,4 +31,12 @@ public class JournalController : ControllerBase
     {
         return new Guid(User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
+
+    [HttpGet]
+    [Route("emotions")]
+    public async Task<JsonResult> GetEmotions()
+    {
+        var results = await _journalService.GetEmotionsByUserAsync(getUserGuid());
+        return new JsonResult(results);
+    }
 }

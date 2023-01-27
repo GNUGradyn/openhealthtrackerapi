@@ -47,4 +47,9 @@ public class JournalService : IJournalService
 
         await _journalDbService.CreateEntryAsync(text, emotions, activities, user);
     }
+
+    public async Task<Emotion[]> GetEmotionsByUserAsync(Guid user)
+    {
+        return await _emotionDbService.GetEmotionsByUserAsync(user);
+    }
 }

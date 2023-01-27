@@ -25,4 +25,12 @@ public class EmotionDbService : IEmotionDbService
             return emotions.ToArray();
         }
     }
+
+    public async Task<Emotion[]> GetEmotionsByUserAsync(Guid user)
+    {
+        using (var db = _dbFactory.OHT())
+        {
+            return await db.Emotions.Where(x => x.UserId == user).ToArrayAsync();
+        }
+    }
 }
