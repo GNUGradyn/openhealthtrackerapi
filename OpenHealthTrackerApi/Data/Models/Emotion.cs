@@ -15,6 +15,9 @@ public class Emotion
     [Column("User")]
     public Guid UserId { get; set; }
     
+    [Column("EmotionCategoryId")]
+    public int CategoryId { get; set; }
+    
     // FK relationships
     public EmotionEntry[] Entries { get; set; }
     public EmotionCategory Category { get; set; }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using OpenHealthTrackerApi.Services.BLL;
 using OpenHealthTrackerApi.Services.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,8 @@ var cert = new X509Certificate2(
 builder.Services.AddControllers();
 builder.Services.AddScoped<IActivityDbService, ActivityDbService>();
 builder.Services.AddScoped<IEmotionDbService, EmotionDbService>();
+builder.Services.AddScoped<IJournalDbService, JournalDbService>();
+builder.Services.AddScoped<IJournalService, JournalService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
