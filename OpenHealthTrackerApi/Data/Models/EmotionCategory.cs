@@ -3,19 +3,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OpenHealthTrackerApi.Data.Models;
 
-public class Emotion
+[Table("EmotionCategory")]
+public class EmotionCategory
 {
     [Key]
     [Column("Id")]
     public int Id { get; set; }
     
+    [Column("User")]
+    public Guid User { get; set; }
+    
     [Column("Name")]
     public string Name { get; set; }
     
-    [Column("User")]
-    public Guid UserId { get; set; }
-    
     // FK relationships
-    public EmotionEntry[] Entries { get; set; }
-    public EmotionCategory Category { get; set; }
+    public Emotion[] emotions { get; set; }
 }
