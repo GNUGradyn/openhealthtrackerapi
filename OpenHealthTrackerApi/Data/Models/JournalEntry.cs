@@ -18,4 +18,8 @@ public class JournalEntry
     
     [Column("CreatedAt")]
     public DateTime CreatedAt { get; set; }
+    
+    // FK relationships
+    public ActivityEntry[] Activities { get; set; }
+    public EmotionEntry[] Emotions { get; set; }
 }

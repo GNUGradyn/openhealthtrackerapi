@@ -15,4 +15,6 @@ public class Activity
     [Column("User")]
     public Guid User { get; set; }
     
+    // FK relationships
+    private ActivityEntry[] Entries { get; set; }
 }
