@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using OpenHealthTrackerApi.Services.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +17,10 @@ var cert = new X509Certificate2(
     Convert.FromBase64String(builder.Configuration.GetValue<string>("IdentityStore:IssuerCert")));
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+builder.Services.AddScoped<IActivityDbService, ActivityDbService>();
+builder.Services.AddScoped<IEmotionDbService, EmotionDbService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
