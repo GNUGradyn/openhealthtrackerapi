@@ -3,11 +3,6 @@ using OpenHealthTrackerApi.Services.DAL;
 
 namespace OpenHealthTrackerApi.Services.BLL;
 
-public interface IJournalService
-{
-    Task CreateEntry(string text, int[] emotionIds, int[] activityIds, Guid user);
-}
-
 public class JournalService : IJournalService
 {
     private readonly IActivityDbService _activityDbService;
