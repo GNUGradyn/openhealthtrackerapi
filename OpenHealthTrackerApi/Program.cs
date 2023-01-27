@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json");
+
+// Import JWT certificate
+var cert = new X509Certificate2(
+    Convert.FromBase64String(builder.Configuration.GetValue<string>("IdentityStore:IssuerCert")));
 
 // Add services to the container.
 
@@ -26,10 +32,12 @@ builder.Services.AddAuthentication(options =>
         o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new X509SecurityKey(cert), // https://stackoverflow.com/questions/46294373/net-core-issuersigningkey-from-file-for-jwt-bearer-authentication
             ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = false,
+            RequireExpirationTime = true, // JWTs are required to have "exp" property set
+            ValidateLifetime = true, // the "exp" will be validated
             ValidateIssuerSigningKey = true
         };
     });
@@ -42,11 +50,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-// OIDC
-
 
 app.Run();
