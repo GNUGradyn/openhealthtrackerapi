@@ -1,6 +1,9 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,21 +17,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication(options =>
     {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     })
-    .AddCookie()
-    .AddOpenIdConnect(options =>
+    .AddJwtBearer(o =>
     {
-        options.ClientId = builder.Configuration.GetValue<string>("IdentityStore:ClientId");
-        options.ClientSecret = builder.Configuration.GetValue<string>("IdentityStore:ClientSecret");
-        options.Authority = builder.Configuration.GetValue<string>("IdentityStore:Authority");
-        options.GetClaimsFromUserInfoEndpoint = true;
-        options.RequireHttpsMetadata = true;
-        options.Scope.Add("openid");
-        options.Scope.Add("profile");
-        options.SaveTokens = true;
-        options.ResponseType = OpenIdConnectResponseType.Code;
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true
+        };
     });
 
 var app = builder.Build();
