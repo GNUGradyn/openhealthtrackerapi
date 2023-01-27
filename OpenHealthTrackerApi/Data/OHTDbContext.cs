@@ -10,6 +10,9 @@ public class OHTDbContext : DbContext
     public DbSet<Activity> Activities { get; set; }
     public DbSet<Emotion> Emotions { get; set; }
     public DbSet<JournalEntry> JournalEntries { get; set; }
+    public DbSet<EmotionEntry> EmotionEntries { get; set; }
+    public DbSet<ActivityEntry> ActivityEntries { get; set; }
+    public DbSet<EmotionCategory> EmotionCategories { get; set; }
 
     public OHTDbContext(IConfiguration config)
     {
