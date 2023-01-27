@@ -31,11 +31,11 @@ builder.Services.AddAuthentication(options =>
     {
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidIssuer = builder.Configuration.GetValue<string>("IdentityStore:Authority"),
             IssuerSigningKey = new X509SecurityKey(cert), // https://stackoverflow.com/questions/46294373/net-core-issuersigningkey-from-file-for-jwt-bearer-authentication
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            //ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateAudience = false,
             RequireExpirationTime = true, // JWTs are required to have "exp" property set
             ValidateLifetime = true, // the "exp" will be validated
             ValidateIssuerSigningKey = true
