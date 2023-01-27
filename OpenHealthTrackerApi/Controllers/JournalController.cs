@@ -39,4 +39,12 @@ public class JournalController : ControllerBase
         var results = await _journalService.GetEmotionsByUserAsync(getUserGuid());
         return new JsonResult(results);
     }
+
+    [HttpGet]
+    [Route("activities")]
+    public async Task<JsonResult> GetActivities()
+    {
+        var results = await _journalService.GetActivitiesByUserAsync(getUserGuid());
+        return new JsonResult(results);
+    }
 }

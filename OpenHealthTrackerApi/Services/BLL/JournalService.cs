@@ -52,4 +52,9 @@ public class JournalService : IJournalService
     {
         return await _emotionDbService.GetEmotionsByUserAsync(user);
     }
+
+    public async Task<Activity[]> GetActivitiesByUserAsync(Guid user)
+    {
+        return await _activityDbService.GetActivitiesByUserAsync(user);
+    }
 }

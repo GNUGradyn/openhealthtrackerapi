@@ -25,4 +25,12 @@ public class ActivityDbService : IActivityDbService
             return activities.ToArray();
         }
     }
+
+    public async Task<Activity[]> GetActivitiesByUserAsync(Guid user)
+    {
+        using (var db = _dbFactory.OHT())
+        {
+            return await db.Activities.Where(x => x.User == user).ToArrayAsync();
+        } 
+    }
 }
