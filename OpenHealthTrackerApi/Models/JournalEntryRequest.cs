@@ -2,7 +2,7 @@
 
 public class JournalEntryRequest
 {
-    public string Text;
-    public int[]? Emotions;
-    public int[]? Activities;
+    public string Text { get; set; }
+    public int[]? Emotions { get; set; }
+    public int[]? Activities { get; set; }
 }
