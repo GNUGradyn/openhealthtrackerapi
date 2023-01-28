@@ -17,12 +17,12 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
-    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user)
+    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start)
     {
-        return await _journalDbService.GetEntriesAsync(count, start, user);
+        return await _journalDbService.GetEntriesAsync(count, start);
     }
     
-    public async Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds, Guid user)
+    public async Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds)
     {
         Emotion[] emotions;
         // handle emotions
@@ -51,43 +51,43 @@ public class JournalService : IJournalService
             throw new KeyNotFoundException("Activity not found", ex);
         }
 
-        var result = await _journalDbService.CreateEntryAsync(text, emotions, activities, user);
+        var result = await _journalDbService.CreateEntryAsync(text, emotions, activities);
         return result;
     }
 
-    public async Task<Emotion[]> GetEmotionsByUserAsync(Guid user)
+    public async Task<Emotion[]> GetEmotionsAsync()
     {
-        return await _emotionDbService.GetEmotionsByUserAsync(user);
+        return await _emotionDbService.GetEmotionsByUserAsync();
     }
 
-    public async Task<Activity[]> GetActivitiesByUserAsync(Guid user)
+    public async Task<Activity[]> GetActivitiesAsync()
     {
-        return await _activityDbService.GetActivitiesByUserAsync(user);
+        return await _activityDbService.GetActivitiesByUserAsync();
     }
 
-    public async Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user)
+    public async Task<EmotionCategory[]> GetEmotionCategoriesAsync()
     {
-        return await _emotionDbService.GetEmotionCategoriesByUserAsync(user);
+        return await _emotionDbService.GetEmotionCategoriesByUserAsync();
     }
 
-    public async Task<int> CreateEmotionCategoryAsync(string name, Guid user)
+    public async Task<int> CreateEmotionCategoryAsync(string name)
     {
-        return await _emotionDbService.CreateEmotionCategoryAsync(name, user);
+        return await _emotionDbService.CreateEmotionCategoryAsync(name);
     }
 
-    public async Task<int> CreateEmotionAsync(string name, int category, Guid user)
+    public async Task<int> CreateEmotionAsync(string name, int category)
     {
-        var categories = await GetEmotionCategoriesByUserAsync(user);
+        var categories = await GetEmotionCategoriesAsync();
         if (categories.Select(x => x.Id).Contains(category))
         {
-            return await _emotionDbService.CreateEmotionAsync(name, category, user);
+            return await _emotionDbService.CreateEmotionAsync(name, category);
         }
         throw new KeyNotFoundException("Category not found");
     }
 
-    public async Task<int> CreateActivityAsync(string name, Guid user)
+    public async Task<int> CreateActivityAsync(string name)
     {
-        return await _activityDbService.CreateActivity(name, user);
+        return await _activityDbService.CreateActivity(name);
     }
 
     public async Task DeleteActivityAsync(int id)

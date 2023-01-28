@@ -6,22 +6,36 @@ namespace OpenHealthTrackerApi.Pipeline;
 public class ResourceAccessHelper : IResourceAccessHelper
 {
     private readonly OHTDbContext _db;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly Guid _user;
 
-    public ResourceAccessHelper(OHTDbContext dbContext)
+    public ResourceAccessHelper(OHTDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
         _db = dbContext;
+        _httpContextAccessor = httpContextAccessor;
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
     }
 
-    public async Task ValidateActivityAccess(int id, Guid user)
+    public async Task ValidateActivityAccess(params int[] ids)
     {
-        if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == user))
-            throw new AccessDeniedException();
+        foreach (var id in ids)
+        {
+            if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == _user))
+            {
+                throw new AccessDeniedException();
+            }
+        }
     }
 
-    public async Task ValidateEmotionAccess(int id, Guid user)
+    public async Task ValidateEmotionAccess(params int[] ids)
     {
-        if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == user))
-            throw new AccessDeniedException();
+        foreach (var id in ids)
+        {
+            if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == _user))
+            {
+                throw new AccessDeniedException();
+            }
+        }
     }
 }
 

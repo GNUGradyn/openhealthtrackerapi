@@ -5,8 +5,8 @@ namespace OpenHealthTrackerApi.Services.DAL;
 public interface IEmotionDbService
 {
     Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids);
-    Task<Emotion[]> GetEmotionsByUserAsync(Guid user);
-    Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user);
-    Task<int> CreateEmotionCategoryAsync(string name, Guid user);
-    Task<int> CreateEmotionAsync(string name, int categoryId, Guid user);
+    Task<Emotion[]> GetEmotionsByUserAsync();
+    Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync();
+    Task<int> CreateEmotionCategoryAsync(string name);
+    Task<int> CreateEmotionAsync(string name, int categoryId);
 }

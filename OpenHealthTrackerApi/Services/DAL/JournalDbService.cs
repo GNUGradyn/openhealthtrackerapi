@@ -8,13 +8,17 @@ namespace OpenHealthTrackerApi.Services.DAL;
 public class JournalDbService : IJournalDbService
 {
     private readonly OHTDbContext _db;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly Guid _user;
 
-    public JournalDbService(OHTDbContext db)
+    public JournalDbService(OHTDbContext db, IHttpContextAccessor httpContextAccessor)
     {
         _db = db;
+        _httpContextAccessor = httpContextAccessor;
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
     }
 
-    public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user)
+    public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities)
     {
         using (var dbContextTransaction = _db.Database.BeginTransaction())
         {
@@ -23,7 +27,7 @@ public class JournalDbService : IJournalDbService
             {
                 Body = text,
                 CreatedAt = DateTime.UtcNow,
-                UserId = user
+                UserId = _user
             });
             await _db.SaveChangesAsync(); // Save so we have access to the ID
 
@@ -47,8 +51,8 @@ public class JournalDbService : IJournalDbService
         }
     }
     
-    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user)
+    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start)
     {
-        return await _db.JournalEntries.Where(x => x.UserId == user).Skip(start).Take(count).ToArrayAsync();
+        return await _db.JournalEntries.Where(x => x.UserId == _user).Skip(start).Take(count).ToArrayAsync();
     }
 }

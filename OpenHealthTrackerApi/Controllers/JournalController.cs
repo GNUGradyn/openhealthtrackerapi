@@ -27,7 +27,7 @@ public class JournalController : ControllerBase
     public async Task<JsonResult> GetEntries([FromBody] PaginatedRequest request)
     {
         var results = await _journalService.GetEntriesAsync(request.ResultsPerPage,
-            request.ResultsPerPage * (request.Page - 1), getUserGuid());
+            request.ResultsPerPage * (request.Page - 1));
         return new JsonResult(results);
     }
 
@@ -35,10 +35,10 @@ public class JournalController : ControllerBase
     [Route("entry")]
     public async Task<JsonResult> CreateEntry([FromBody] JournalEntryRequest request)
     {
-        request.Activities.ToList().ForEach(async x => await _resourceAccessHelper.ValidateActivityAccess(x, getUserGuid()));
-        request.Emotions.ToList().ForEach(async x => await _resourceAccessHelper.ValidateEmotionAccess(x, getUserGuid()));
+        await _resourceAccessHelper.ValidateActivityAccess(request.Activities);
+        await _resourceAccessHelper.ValidateEmotionAccess(request.Emotions);
         var result =
-            await _journalService.CreateEntry(request.Text, request.Emotions, request.Activities, getUserGuid());
+            await _journalService.CreateEntry(request.Text, request.Emotions, request.Activities);
         return new JsonResult(new IdResponse(result));
     }
 
@@ -46,7 +46,7 @@ public class JournalController : ControllerBase
     [Route("emotions")]
     public async Task<JsonResult> GetEmotions()
     {
-        var results = await _journalService.GetEmotionsByUserAsync(getUserGuid());
+        var results = await _journalService.GetEmotionsAsync();
         return new JsonResult(results);
     }
 
@@ -54,7 +54,7 @@ public class JournalController : ControllerBase
     [Route("Emotions")]
     public async Task<JsonResult> CreateEmotion([FromBody] CreateEmotionRequest request)
     {
-        var results = await _journalService.CreateEmotionAsync(request.Name, request.Category, getUserGuid());
+        var results = await _journalService.CreateEmotionAsync(request.Name, request.Category);
         return new JsonResult(new IdResponse(results));
     }
 
@@ -62,7 +62,7 @@ public class JournalController : ControllerBase
     [Route("activities")]
     public async Task<JsonResult> GetActivities()
     {
-        var results = await _journalService.GetActivitiesByUserAsync(getUserGuid());
+        var results = await _journalService.GetActivitiesAsync();
         return new JsonResult(results);
     }
 
@@ -70,7 +70,7 @@ public class JournalController : ControllerBase
     [Route("activities")]
     public async Task<JsonResult> CreateActivity([FromBody] NamedObjectRequest request)
     {
-        var result = await _journalService.CreateActivityAsync(request.Name, getUserGuid());
+        var result = await _journalService.CreateActivityAsync(request.Name);
         return new JsonResult(new IdResponse(result));
     }
 
@@ -78,7 +78,7 @@ public class JournalController : ControllerBase
     [Route("activities")]
     public async Task<IActionResult> DeleteActivity([FromQuery] int id)
     {
-        await _resourceAccessHelper.ValidateActivityAccess(id, getUserGuid());
+        await _resourceAccessHelper.ValidateActivityAccess(id);
         await _journalService.DeleteActivityAsync(id);
         return StatusCode(204);
     }
@@ -87,7 +87,7 @@ public class JournalController : ControllerBase
     [Route("emotioncategories")]
     public async Task<JsonResult> GetEmotionCategories()
     {
-        var results = await _journalService.GetEmotionCategoriesByUserAsync(getUserGuid());
+        var results = await _journalService.GetEmotionCategoriesAsync();
         return new JsonResult(results);
     }
 
@@ -95,12 +95,7 @@ public class JournalController : ControllerBase
     [Route("emotioncategories")]
     public async Task<JsonResult> CreateEmotionCategory([FromBody] NamedObjectRequest request)
     {
-        var result = await _journalService.CreateEmotionCategoryAsync(request.Name, getUserGuid());
+        var result = await _journalService.CreateEmotionCategoryAsync(request.Name);
         return new JsonResult(new IdResponse(result));
-    }
-
-    private Guid getUserGuid()
-    {
-        return new Guid(User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 }

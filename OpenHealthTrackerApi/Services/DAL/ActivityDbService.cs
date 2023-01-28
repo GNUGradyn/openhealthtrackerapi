@@ -7,10 +7,13 @@ namespace OpenHealthTrackerApi.Services.DAL;
 public class ActivityDbService : IActivityDbService
 {
     private readonly OHTDbContext _db;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly Guid _user;
 
     public ActivityDbService(OHTDbContext db)
     {
         _db = db;
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
     }
 
     public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids)
@@ -23,17 +26,17 @@ public class ActivityDbService : IActivityDbService
         return activities.ToArray();
     }
 
-    public async Task<Activity[]> GetActivitiesByUserAsync(Guid user)
+    public async Task<Activity[]> GetActivitiesByUserAsync()
     {
-        return await _db.Activities.Where(x => x.User == user).ToArrayAsync();
+        return await _db.Activities.Where(x => x.User == _user).ToArrayAsync();
     }
 
-    public async Task<int> CreateActivity(string name, Guid user)
+    public async Task<int> CreateActivity(string name)
     {
         var activity = new Activity
         {
             Name = name,
-            User = user
+            User = _user
         };
         await _db.Activities.AddAsync(activity);
         await _db.SaveChangesAsync();
