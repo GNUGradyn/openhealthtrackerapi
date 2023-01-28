@@ -9,4 +9,5 @@ public interface IJournalService
     Task<Activity[]> GetActivitiesByUserAsync(Guid user);
     Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user);
     Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user);
+    Task<int> CreateEmotionCategoryAsync(string name, Guid user);
 }
