@@ -19,6 +19,14 @@ public class JournalController : ControllerBase
         _journalService = journalService;
     }
 
+    [HttpGet]
+    [Route("entries")]
+    public async Task<JsonResult> GetEntries([FromBody] PaginatedRequest request)
+    {
+        var results = await _journalService.GetEntriesAsync(request.ResultsPerPage, request.ResultsPerPage * (request.Page - 1), getUserGuid());
+        return new JsonResult(results);
+    }
+    
     [HttpPost]
     [Route("entry")]
     public async Task<JsonResult> CreateEntry([FromBody] JournalEntryRequest request)

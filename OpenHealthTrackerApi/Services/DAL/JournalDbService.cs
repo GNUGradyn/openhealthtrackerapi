@@ -1,6 +1,7 @@
 ﻿using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace OpenHealthTrackerApi.Services.DAL;
 
@@ -46,6 +47,14 @@ public class JournalDbService : IJournalDbService
                 await dbContextTransaction.CommitAsync();
                 return entry.Entity.Id;
             }
+        }
+    }
+
+    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user)
+    {
+        using (var db = _dbFactory.OHT())
+        {
+            return await db.JournalEntries.Where(x => x.UserId == user).Skip(start).Take(count).ToArrayAsync();
         }
     }
 }

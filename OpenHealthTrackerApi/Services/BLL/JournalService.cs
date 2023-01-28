@@ -17,6 +17,11 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
+    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user)
+    {
+        return await _journalDbService.GetEntriesAsync(count, start, user);
+    }
+    
     public async Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds, Guid user)
     {
         Emotion[] emotions;
