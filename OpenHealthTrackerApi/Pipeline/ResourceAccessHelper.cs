@@ -19,6 +19,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
 
     public async Task ValidateActivityAccess(params int[] ids)
     {
+        if (ids == null) ids = Array.Empty<int>();
         foreach (var id in ids)
         {
             if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == _user))
@@ -30,6 +31,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
 
     public async Task ValidateEmotionAccess(params int[] ids)
     {
+        if (ids == null) ids = Array.Empty<int>();
         foreach (var id in ids)
         {
             if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == _user))
