@@ -74,4 +74,14 @@ public class JournalService : IJournalService
     {
         return await _emotionDbService.CreateEmotionCategoryAsync(name, user);
     }
+
+    public async Task<int> CreateEmotionAsync(string name, int category, Guid user)
+    {
+        var categories = await GetEmotionCategoriesByUserAsync(user);
+        if (categories.Select(x => x.Id).Contains(category))
+        {
+            return await _emotionDbService.CreateEmotionAsync(name, category, user);
+        }
+        throw new KeyNotFoundException("Category not found");
+    }
 }

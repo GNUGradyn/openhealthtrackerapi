@@ -8,4 +8,5 @@ public interface IEmotionDbService
     Task<Emotion[]> GetEmotionsByUserAsync(Guid user);
     Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user);
     Task<int> CreateEmotionCategoryAsync(string name, Guid user);
+    Task<int> CreateEmotionAsync(string name, int categoryId, Guid user);
 }

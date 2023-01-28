@@ -48,6 +48,14 @@ public class JournalController : ControllerBase
         return new JsonResult(results);
     }
 
+    [HttpPost]
+    [Route("Emotions")]
+    public async Task<JsonResult> CreateEmotion([FromBody] CreateEmotionRequest request)
+    {
+        var results = await _journalService.CreateEmotionAsync(request.Name, request.Category, getUserGuid());
+        return new JsonResult(new IdResponse(results));
+    }
+
     [HttpGet]
     [Route("activities")]
     public async Task<JsonResult> GetActivities()

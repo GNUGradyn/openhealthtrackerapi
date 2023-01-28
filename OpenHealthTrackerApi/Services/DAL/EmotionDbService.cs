@@ -56,4 +56,21 @@ public class EmotionDbService : IEmotionDbService
             return emotion.Id;
         }
     }
+
+    public async Task<int> CreateEmotionAsync(string name, int categoryId, Guid user)
+    {
+        var emotion = new Emotion
+        {
+            CategoryId = categoryId,
+            Name = name,
+            UserId = user
+        };
+
+        using (var db = _dbFactory.OHT())
+        {
+            await db.Emotions.AddAsync(emotion);
+            await db.SaveChangesAsync();
+            return emotion.Id;
+        }
+    }
 }
