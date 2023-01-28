@@ -21,10 +21,10 @@ public class JournalController : ControllerBase
 
     [HttpPost]
     [Route("entry")]
-    public async Task<IActionResult> CreateEntry([FromBody] JournalEntryRequest request)
+    public async Task<JsonResult> CreateEntry([FromBody] JournalEntryRequest request)
     {
-        await _journalService.CreateEntry(request.Text, request.Emotions, request.Activities, getUserGuid());
-        return StatusCode(204);
+        var result = await _journalService.CreateEntry(request.Text, request.Emotions, request.Activities, getUserGuid());
+        return new JsonResult(new IdResponse(result));
     }
 
     private Guid getUserGuid()

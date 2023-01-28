@@ -13,7 +13,7 @@ public class JournalDbService : IJournalDbService
         _dbFactory = dbFactory;
     }
 
-    public async Task CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user)
+    public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user)
     {
         using (var db = _dbFactory.OHT())
         {
@@ -44,6 +44,7 @@ public class JournalDbService : IJournalDbService
 
                 await db.SaveChangesAsync();
                 await dbContextTransaction.CommitAsync();
+                return entry.Entity.Id;
             }
         }
     }

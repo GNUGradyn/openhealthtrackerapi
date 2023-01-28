@@ -17,7 +17,7 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
-    public async Task CreateEntry(string text, int[]? emotionIds, int[]? activityIds, Guid user)
+    public async Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds, Guid user)
     {
         Emotion[] emotions;
         // handle emotions
@@ -46,7 +46,8 @@ public class JournalService : IJournalService
             throw new KeyNotFoundException("Activity not found", ex);
         }
 
-        await _journalDbService.CreateEntryAsync(text, emotions, activities, user);
+        var result = await _journalDbService.CreateEntryAsync(text, emotions, activities, user);
+        return result;
     }
 
     public async Task<Emotion[]> GetEmotionsByUserAsync(Guid user)
@@ -63,5 +64,4 @@ public class JournalService : IJournalService
     {
         return await _emotionDbService.GetEmotionCategoriesByUserAsync(user);
     }
-
 }

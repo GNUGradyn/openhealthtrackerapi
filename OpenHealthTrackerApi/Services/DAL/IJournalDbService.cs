@@ -4,5 +4,5 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public interface IJournalDbService
 {
-    Task CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user);
+    Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user);
 }
