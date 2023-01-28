@@ -89,4 +89,9 @@ public class JournalService : IJournalService
     {
         return await _activityDbService.CreateActivity(name, user);
     }
+
+    public async Task DeleteActivityAsync(int id)
+    {
+        await _activityDbService.DeleteActivity(id);
+    }
 }

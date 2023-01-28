@@ -12,4 +12,5 @@ public interface IJournalService
     Task<int> CreateEmotionCategoryAsync(string name, Guid user);
     Task<int> CreateEmotionAsync(string name, int category, Guid user);
     Task<int> CreateActivityAsync(string name, Guid user);
+    Task DeleteActivityAsync(int id);
 }

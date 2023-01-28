@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using OpenHealthTrackerApi.Data;
+using OpenHealthTrackerApi.Pipeline;
 using OpenHealthTrackerApi.Services.BLL;
 using OpenHealthTrackerApi.Services.DAL;
 
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IActivityDbService, ActivityDbService>();
 builder.Services.AddScoped<IEmotionDbService, EmotionDbService>();
 builder.Services.AddScoped<IJournalDbService, JournalDbService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
+builder.Services.AddScoped<IResourceAccessHelper, ResourceAccessHelper>();
 builder.Services.AddScoped<DbFactory>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

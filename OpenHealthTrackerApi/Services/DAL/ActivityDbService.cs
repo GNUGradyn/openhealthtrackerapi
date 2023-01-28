@@ -48,4 +48,19 @@ public class ActivityDbService : IActivityDbService
             return activity.Id;
         }
     }
+
+    public async Task DeleteActivity(int id)
+    {
+        using (var db = _dbFactory.OHT())
+        {
+            var activity = await db.Activities.FindAsync(id);
+            if (activity == null)
+            {
+                throw new KeyNotFoundException("Activity not found");
+            }
+
+            db.Remove(activity);
+            await db.SaveChangesAsync();
+        }
+    }
 }
