@@ -9,7 +9,8 @@ public class JournalService : IJournalService
     private readonly IEmotionDbService _emotionDbService;
     private readonly IJournalDbService _journalDbService;
 
-    public JournalService(IActivityDbService activityDbService, IEmotionDbService emotionDbService, IJournalDbService journalDbService)
+    public JournalService(IActivityDbService activityDbService, IEmotionDbService emotionDbService,
+        IJournalDbService journalDbService)
     {
         _activityDbService = activityDbService;
         _emotionDbService = emotionDbService;
@@ -57,4 +58,10 @@ public class JournalService : IJournalService
     {
         return await _activityDbService.GetActivitiesByUserAsync(user);
     }
+
+    public async Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user)
+    {
+        return await _emotionDbService.GetEmotionCategoriesByUserAsync(user);
+    }
+
 }

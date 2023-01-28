@@ -33,4 +33,12 @@ public class EmotionDbService : IEmotionDbService
             return await db.Emotions.Where(x => x.UserId == user).ToArrayAsync();
         }
     }
+
+    public async Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user)
+    {
+        using (var db = _dbFactory.OHT())
+        {
+            return await db.EmotionCategories.Where(x => x.User == user).ToArrayAsync();
+        }
+    }
 }
