@@ -63,6 +63,14 @@ public class JournalController : ControllerBase
         var results = await _journalService.GetActivitiesByUserAsync(getUserGuid());
         return new JsonResult(results);
     }
+
+    [HttpPost]
+    [Route("activities")]
+    public async Task<JsonResult> CreateActivity([FromBody] NamedObjectRequest request)
+    {
+        var result = await _journalService.CreateActivityAsync(request.Name, getUserGuid());
+        return new JsonResult(new IdResponse(result));
+    }
     
     [HttpGet]
     [Route("emotioncategories")]
@@ -74,7 +82,7 @@ public class JournalController : ControllerBase
 
     [HttpPost]
     [Route("emotioncategories")]
-    public async Task<JsonResult> CreateEmotionCategory([FromBody] EmotionCategoryRequest request)
+    public async Task<JsonResult> CreateEmotionCategory([FromBody] NamedObjectRequest request)
     {
         var result = await _journalService.CreateEmotionCategoryAsync(request.Name, getUserGuid());
         return new JsonResult(new IdResponse(result));

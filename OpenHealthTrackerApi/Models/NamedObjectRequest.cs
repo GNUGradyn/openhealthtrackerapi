@@ -1,8 +1,8 @@
 ﻿namespace OpenHealthTrackerApi.Models;
 
-public class EmotionCategoryRequest
+public class NamedObjectRequest
 {
-    public EmotionCategoryRequest(string name)
+    public NamedObjectRequest(string name)
     {
         Name = name;
     }

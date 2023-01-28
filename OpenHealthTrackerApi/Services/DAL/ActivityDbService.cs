@@ -33,4 +33,19 @@ public class ActivityDbService : IActivityDbService
             return await db.Activities.Where(x => x.User == user).ToArrayAsync();
         } 
     }
+
+    public async Task<int> CreateActivity(string name, Guid user)
+    {
+        var activity = new Activity
+        {
+            Name = name,
+            User = user
+        };
+        using (var db = _dbFactory.OHT())
+        {
+            await db.Activities.AddAsync(activity);
+            await db.SaveChangesAsync();
+            return activity.Id;
+        }
+    }
 }

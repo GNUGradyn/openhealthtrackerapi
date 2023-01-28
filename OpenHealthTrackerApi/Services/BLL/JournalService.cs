@@ -84,4 +84,9 @@ public class JournalService : IJournalService
         }
         throw new KeyNotFoundException("Category not found");
     }
+
+    public async Task<int> CreateActivityAsync(string name, Guid user)
+    {
+        return await _activityDbService.CreateActivity(name, user);
+    }
 }
