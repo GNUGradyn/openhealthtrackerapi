@@ -26,6 +26,7 @@ builder.Services.AddScoped<IEmotionDbService, EmotionDbService>();
 builder.Services.AddScoped<IJournalDbService, JournalDbService>();
 builder.Services.AddScoped<IJournalService, JournalService>();
 builder.Services.AddScoped<IResourceAccessHelper, ResourceAccessHelper>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<OHTDbContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

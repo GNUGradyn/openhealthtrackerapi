@@ -1,4 +1,5 @@
-﻿using OpenHealthTrackerApi.Data;
+﻿using System.Security.Claims;
+using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ public class JournalDbService : IJournalDbService
     {
         _db = db;
         _httpContextAccessor = httpContextAccessor;
-        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities)

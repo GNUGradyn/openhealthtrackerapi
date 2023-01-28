@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 
@@ -10,10 +11,11 @@ public class ActivityDbService : IActivityDbService
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly Guid _user;
 
-    public ActivityDbService(OHTDbContext db)
+    public ActivityDbService(OHTDbContext db, IHttpContextAccessor httpContextAccessor)
     {
         _db = db;
-        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
+        _httpContextAccessor = httpContextAccessor;
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids)

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 
@@ -14,7 +15,7 @@ public class EmotionDbService : IEmotionDbService
     {
         _db = db;
         _httpContextAccessor = httpContextAccessor;
-        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids)

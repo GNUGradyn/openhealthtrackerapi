@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 using OpenHealthTrackerApi.Data;
 
 namespace OpenHealthTrackerApi.Pipeline;
@@ -13,7 +14,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
     {
         _db = dbContext;
         _httpContextAccessor = httpContextAccessor;
-        _user = new Guid(_httpContextAccessor.HttpContext.User.Identity.Name);
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
     public async Task ValidateActivityAccess(params int[] ids)
