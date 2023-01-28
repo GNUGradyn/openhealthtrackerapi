@@ -2,5 +2,6 @@
 
 public interface IResourceAccessHelper
 {
-    Task<bool> ValidateActivityAccess(int id, Guid user);
+    Task ValidateActivityAccess(int id, Guid user);
+    Task ValidateEmotionAccess(int id, Guid user);
 }

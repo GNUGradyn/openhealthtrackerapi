@@ -35,6 +35,8 @@ public class JournalController : ControllerBase
     [Route("entry")]
     public async Task<JsonResult> CreateEntry([FromBody] JournalEntryRequest request)
     {
+        request.Activities.ToList().ForEach(async x => await _resourceAccessHelper.ValidateActivityAccess(x, getUserGuid()));
+        request.Emotions.ToList().ForEach(async x => await _resourceAccessHelper.ValidateEmotionAccess(x, getUserGuid()));
         var result =
             await _journalService.CreateEntry(request.Text, request.Emotions, request.Activities, getUserGuid());
         return new JsonResult(new IdResponse(result));
@@ -76,13 +78,9 @@ public class JournalController : ControllerBase
     [Route("activities")]
     public async Task<IActionResult> DeleteActivity([FromQuery] int id)
     {
-        if (await _resourceAccessHelper.ValidateActivityAccess(id, getUserGuid())) // TODO: investigate using some sort of middleware instead of doing this for security
-        {
-            await _journalService.DeleteActivityAsync(id);
-            return StatusCode(204);
-        }
-
-        return StatusCode(403);
+        await _resourceAccessHelper.ValidateActivityAccess(id, getUserGuid());
+        await _journalService.DeleteActivityAsync(id);
+        return StatusCode(204);
     }
 
     [HttpGet]

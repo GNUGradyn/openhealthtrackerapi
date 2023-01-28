@@ -7,54 +7,48 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public class JournalDbService : IJournalDbService
 {
-    private readonly DbFactory _dbFactory;
+    private readonly OHTDbContext _db;
 
-    public JournalDbService(DbFactory dbFactory)
+    public JournalDbService(OHTDbContext db)
     {
-        _dbFactory = dbFactory;
+        _db = db;
     }
 
     public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities, Guid user)
     {
-        using (var db = _dbFactory.OHT())
+        using (var dbContextTransaction = _db.Database.BeginTransaction())
         {
-            using (var dbContextTransaction = db.Database.BeginTransaction())
+            // Add journal entry
+            var entry = await _db.JournalEntries.AddAsync(new JournalEntry()
             {
-                // Add journal entry
-                var entry = await db.JournalEntries.AddAsync(new JournalEntry()
-                {
-                    Body = text,
-                    CreatedAt = DateTime.UtcNow,
-                    UserId = user
-                });
-                await db.SaveChangesAsync(); // Save so we have access to the ID
-                
-                // Attach emotions
-                await db.EmotionEntries.AddRangeAsync(emotions.Select(x => new EmotionEntry()
-                {
-                    EmotionId = x.Id,
-                    JournalEntryId = entry.Entity.Id
-                }));
-                
-                // Attach activities
-                await db.ActivityEntries.AddRangeAsync(activities.Select(x => new ActivityEntry()
-                {
-                    ActivityId = x.Id,
-                    JournalEntryId = entry.Entity.Id
-                }));
+                Body = text,
+                CreatedAt = DateTime.UtcNow,
+                UserId = user
+            });
+            await _db.SaveChangesAsync(); // Save so we have access to the ID
 
-                await db.SaveChangesAsync();
-                await dbContextTransaction.CommitAsync();
-                return entry.Entity.Id;
-            }
+            // Attach emotions
+            await _db.EmotionEntries.AddRangeAsync(emotions.Select(x => new EmotionEntry()
+            {
+                EmotionId = x.Id,
+                JournalEntryId = entry.Entity.Id
+            }));
+
+            // Attach activities
+            await _db.ActivityEntries.AddRangeAsync(activities.Select(x => new ActivityEntry()
+            {
+                ActivityId = x.Id,
+                JournalEntryId = entry.Entity.Id
+            }));
+
+            await _db.SaveChangesAsync();
+            await dbContextTransaction.CommitAsync();
+            return entry.Entity.Id;
         }
     }
-
+    
     public async Task<JournalEntry[]> GetEntriesAsync(int count, int start, Guid user)
     {
-        using (var db = _dbFactory.OHT())
-        {
-            return await db.JournalEntries.Where(x => x.UserId == user).Skip(start).Take(count).ToArrayAsync();
-        }
+        return await _db.JournalEntries.Where(x => x.UserId == user).Skip(start).Take(count).ToArrayAsync();
     }
 }

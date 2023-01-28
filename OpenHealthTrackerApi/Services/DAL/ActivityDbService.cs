@@ -6,32 +6,26 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public class ActivityDbService : IActivityDbService
 {
-    private readonly DbFactory _dbFactory;
+    private readonly OHTDbContext _db;
 
-    public ActivityDbService(DbFactory dbFactory)
+    public ActivityDbService(OHTDbContext db)
     {
-        _dbFactory = dbFactory;
+        _db = db;
     }
 
     public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids)
     {
         if (ids == null) return Array.Empty<Activity>();
-        using (var db = _dbFactory.OHT())
-        {
-            var activities = await db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();
+        var activities = await _db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();
 
-            if (ids.Any(x => activities.All(y => x != y.Id))) throw new KeyNotFoundException("Activity not found");
+        if (ids.Any(x => activities.All(y => x != y.Id))) throw new KeyNotFoundException("Activity not found");
 
-            return activities.ToArray();
-        }
+        return activities.ToArray();
     }
 
     public async Task<Activity[]> GetActivitiesByUserAsync(Guid user)
     {
-        using (var db = _dbFactory.OHT())
-        {
-            return await db.Activities.Where(x => x.User == user).ToArrayAsync();
-        } 
+        return await _db.Activities.Where(x => x.User == user).ToArrayAsync();
     }
 
     public async Task<int> CreateActivity(string name, Guid user)
@@ -41,26 +35,20 @@ public class ActivityDbService : IActivityDbService
             Name = name,
             User = user
         };
-        using (var db = _dbFactory.OHT())
-        {
-            await db.Activities.AddAsync(activity);
-            await db.SaveChangesAsync();
-            return activity.Id;
-        }
+        await _db.Activities.AddAsync(activity);
+        await _db.SaveChangesAsync();
+        return activity.Id;
     }
 
     public async Task DeleteActivity(int id)
     {
-        using (var db = _dbFactory.OHT())
+        var activity = await _db.Activities.FindAsync(id);
+        if (activity == null)
         {
-            var activity = await db.Activities.FindAsync(id);
-            if (activity == null)
-            {
-                throw new KeyNotFoundException("Activity not found");
-            }
-
-            db.Remove(activity);
-            await db.SaveChangesAsync();
+            throw new KeyNotFoundException("Activity not found");
         }
+
+        _db.Remove(activity);
+        await _db.SaveChangesAsync();
     }
 }

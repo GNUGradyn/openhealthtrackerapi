@@ -6,40 +6,31 @@ namespace OpenHealthTrackerApi.Services.DAL;
 
 public class EmotionDbService : IEmotionDbService
 {
-    private readonly DbFactory _dbFactory;
+    private readonly OHTDbContext _db;
 
-    public EmotionDbService(DbFactory dbFactory)
+    public EmotionDbService(OHTDbContext db)
     {
-        _dbFactory = dbFactory;
+        _db = db;
     }
 
     public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids)
     {
         if (ids == null) return Array.Empty<Emotion>();
-        using (var db = _dbFactory.OHT())
-        {
-            var emotions = await db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();
+        var emotions = await _db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();
 
-            if (ids.Any(x => emotions.All(y => x != y.Id))) throw new KeyNotFoundException("Emotion not found");
+        if (ids.Any(x => emotions.All(y => x != y.Id))) throw new KeyNotFoundException("Emotion not found");
 
-            return emotions.ToArray();
-        }
+        return emotions.ToArray();
     }
 
     public async Task<Emotion[]> GetEmotionsByUserAsync(Guid user)
     {
-        using (var db = _dbFactory.OHT())
-        {
-            return await db.Emotions.Where(x => x.UserId == user).ToArrayAsync();
-        }
+        return await _db.Emotions.Where(x => x.UserId == user).ToArrayAsync();
     }
 
     public async Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync(Guid user)
     {
-        using (var db = _dbFactory.OHT())
-        {
-            return await db.EmotionCategories.Where(x => x.User == user).ToArrayAsync();
-        }
+        return await _db.EmotionCategories.Where(x => x.User == user).ToArrayAsync();
     }
 
     public async Task<int> CreateEmotionCategoryAsync(string name, Guid user)
@@ -49,12 +40,9 @@ public class EmotionDbService : IEmotionDbService
             User = user,
             Name = name
         };
-        using (var db = _dbFactory.OHT())
-        {
-            await db.EmotionCategories.AddAsync(emotion);
-            await db.SaveChangesAsync();
-            return emotion.Id;
-        }
+        await _db.EmotionCategories.AddAsync(emotion);
+        await _db.SaveChangesAsync();
+        return emotion.Id;
     }
 
     public async Task<int> CreateEmotionAsync(string name, int categoryId, Guid user)
@@ -66,11 +54,8 @@ public class EmotionDbService : IEmotionDbService
             UserId = user
         };
 
-        using (var db = _dbFactory.OHT())
-        {
-            await db.Emotions.AddAsync(emotion);
-            await db.SaveChangesAsync();
-            return emotion.Id;
-        }
+        await _db.Emotions.AddAsync(emotion);
+        await _db.SaveChangesAsync();
+        return emotion.Id;
     }
 }

@@ -5,18 +5,39 @@ namespace OpenHealthTrackerApi.Pipeline;
 
 public class ResourceAccessHelper : IResourceAccessHelper
 {
-    private readonly DbFactory _dbFactory;
+    private readonly OHTDbContext _db;
 
-    public ResourceAccessHelper(DbFactory dbFactory)
+    public ResourceAccessHelper(OHTDbContext dbContext)
     {
-        _dbFactory = dbFactory;
+        _db = dbContext;
     }
 
-    public async Task<bool> ValidateActivityAccess(int id, Guid user)
+    public async Task ValidateActivityAccess(int id, Guid user)
     {
-        using (var db = _dbFactory.OHT())
-        {
-            return await db.Activities.AnyAsync(x => x.Id == id && x.User == user);
-        }
+        if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == user))
+            throw new AccessDeniedException();
+    }
+
+    public async Task ValidateEmotionAccess(int id, Guid user)
+    {
+        if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == user))
+            throw new AccessDeniedException();
+    }
+}
+
+public class AccessDeniedException : Exception
+{
+    public AccessDeniedException()
+    {
+    }
+
+    public AccessDeniedException(string message)
+        : base(message)
+    {
+    }
+
+    public AccessDeniedException(string message, Exception inner)
+        : base(message, inner)
+    {
     }
 }
