@@ -42,6 +42,15 @@ public class JournalController : ControllerBase
         return new JsonResult(new IdResponse(result));
     }
 
+    [HttpDelete]
+    [Route("entry")]
+    public async Task<IActionResult> DeleteEntry([FromQuery] int id)
+    {
+        await _resourceAccessHelper.ValidateJournalEntryAccess(id);
+        await _journalService.DeleteEntryAsync(id);
+        return StatusCode(204);
+    }
+
     [HttpGet]
     [Route("emotions")]
     public async Task<JsonResult> GetEmotions()

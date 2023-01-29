@@ -52,6 +52,18 @@ public class ResourceAccessHelper : IResourceAccessHelper
             }
         }
     }
+
+    public async Task ValidateJournalEntryAccess(params int[] ids)
+    {
+        if (ids == null) return;
+        foreach (var id in ids)
+        {
+            if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
+            {
+                throw new AccessDeniedException();
+            }
+        }
+    }
 }
 
 public class AccessDeniedException : Exception

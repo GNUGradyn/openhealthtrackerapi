@@ -72,4 +72,14 @@ public class JournalDbService : IJournalDbService
             Id = x.Id
         }).ToListAsync();
     }
+
+    public async Task DeleteEntry(int id)
+    {
+        var entry = await _db.JournalEntries.FindAsync(id);
+        if (entry == null) throw new KeyNotFoundException();
+        _db.RemoveRange(_db.EmotionEntries.Where(x => x.JournalEntryId == entry.Id));
+        _db.RemoveRange(_db.ActivityEntries.Where(x => x.JournalEntryId == entry.Id));
+        _db.Remove(entry);
+        await _db.SaveChangesAsync();
+    }
 }

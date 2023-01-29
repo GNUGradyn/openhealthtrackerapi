@@ -19,4 +19,5 @@ public interface IJournalService
     Task DeleteActivityAsync(int id);
     Task DeleteEmotionAsync(int id);
     Task DeleteEmotionCategoryAsync(int id);
+    Task DeleteEntryAsync(int id);
 }
