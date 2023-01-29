@@ -52,7 +52,7 @@ public class JournalDbService : IJournalDbService
         }
     }
     
-    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start)
+    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start) // TODO: replace return type with list instead of array, use a DTO
     {
         return await _db.JournalEntries.Where(x => x.UserId == _user).Skip(start).Take(count).ToArrayAsync();
     }

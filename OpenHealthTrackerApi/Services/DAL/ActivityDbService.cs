@@ -18,7 +18,7 @@ public class ActivityDbService : IActivityDbService
         _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
-    public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids)
+    public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids) // TODO: replace return type with list instead of array, use a DTO
     {
         if (ids == null) return Array.Empty<Activity>();
         var activities = await _db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();
@@ -28,7 +28,7 @@ public class ActivityDbService : IActivityDbService
         return activities.ToArray();
     }
 
-    public async Task<Activity[]> GetActivitiesByUserAsync()
+    public async Task<Activity[]> GetActivitiesByUserAsync() // TODO: replace return type with list instead of array, use a DTO
     {
         return await _db.Activities.Where(x => x.User == _user).ToArrayAsync();
     }

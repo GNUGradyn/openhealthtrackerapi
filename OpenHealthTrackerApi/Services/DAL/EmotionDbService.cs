@@ -19,7 +19,7 @@ public class EmotionDbService : IEmotionDbService
         _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
-    public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids)
+    public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids) // TODO: replace return type with list instead of array, use a DTO
     {
         if (ids == null) return Array.Empty<Emotion>();
         var emotions = await _db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();
@@ -29,7 +29,7 @@ public class EmotionDbService : IEmotionDbService
         return emotions.ToArray();
     }
 
-    public async Task<Emotion[]> GetEmotionsByUserAsync() // TODO: replace return type with list instead of array
+    public async Task<Emotion[]> GetEmotionsByUserAsync() // TODO: replace return type with list instead of array, use a DTO
     {
         return await _db.Emotions.Where(x => x.UserId == _user).ToArrayAsync();
     }
