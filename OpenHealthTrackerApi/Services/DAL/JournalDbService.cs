@@ -58,6 +58,7 @@ public class JournalDbService : IJournalDbService
         var results = _db.JournalEntries.Where(x => x.UserId == _user).Skip(start).Take(count);
         return await results.Select(x => new Models.JournalEntry
         {
+            Text = x.Body,
             CreatedAt = x.CreatedAt,
             Activities = x.Activities.Select(y => new Models.Activity
             {
