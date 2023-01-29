@@ -58,6 +58,15 @@ public class JournalController : ControllerBase
         return new JsonResult(new IdResponse(results));
     }
 
+    [HttpDelete]
+    [Route("Emotions")]
+    public async Task<IActionResult> DeleteEmotion([FromQuery] int id)
+    {
+        await _resourceAccessHelper.ValidateEmotionAccess(id);
+        await _journalService.DeleteEmotionAsync(id);
+        return StatusCode(204);
+    }
+
     [HttpGet]
     [Route("activities")]
     public async Task<JsonResult> GetActivities()
@@ -97,5 +106,14 @@ public class JournalController : ControllerBase
     {
         var result = await _journalService.CreateEmotionCategoryAsync(request.Name);
         return new JsonResult(new IdResponse(result));
+    }
+
+    [HttpDelete]
+    [Route("emotioncategories")]
+    public async Task<IActionResult> DeleteEmotionCategory([FromQuery] int id)
+    {
+        await _resourceAccessHelper.ValidateEmotionCategoryAccess(id);
+        await _journalService.DeleteEmotionCategoryAsync(id);
+        return StatusCode(204);
     }
 }

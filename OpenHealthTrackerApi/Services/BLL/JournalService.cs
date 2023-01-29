@@ -98,4 +98,14 @@ public class JournalService : IJournalService
     {
         await _activityDbService.DeleteActivity(id);
     }
+
+    public async Task DeleteEmotionAsync(int id)
+    {
+        await _emotionDbService.DeleteEmotionAsync(id);
+    }
+
+    public async Task DeleteEmotionCategoryAsync(int id)
+    {
+        await _emotionDbService.DeleteEmotionCategoryAsync(id);
+    }
 }

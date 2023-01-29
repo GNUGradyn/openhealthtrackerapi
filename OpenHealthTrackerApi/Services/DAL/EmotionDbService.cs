@@ -96,4 +96,21 @@ public class EmotionDbService : IEmotionDbService
         await _db.SaveChangesAsync();
         return emotion.Id;
     }
-}
+
+    public async Task DeleteEmotionAsync(int id)
+    {
+        var emotion = await _db.Emotions.FindAsync(id);
+        if (emotion == null) throw new KeyNotFoundException("Emotion not found");
+        _db.Remove(emotion);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task DeleteEmotionCategoryAsync(int id)
+    {
+        var category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
+        if (category == null) throw new KeyNotFoundException("Category not found");
+        if (category.emotions.Any()) throw new InvalidOperationException("Category not empty");
+        _db.Remove(category);
+        await _db.SaveChangesAsync();
+    }
+} 

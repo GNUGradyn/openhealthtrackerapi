@@ -19,7 +19,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
 
     public async Task ValidateActivityAccess(params int[] ids)
     {
-        if (ids == null) ids = Array.Empty<int>();
+        if (ids == null) return;
         foreach (var id in ids)
         {
             if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == _user))
@@ -31,10 +31,22 @@ public class ResourceAccessHelper : IResourceAccessHelper
 
     public async Task ValidateEmotionAccess(params int[] ids)
     {
-        if (ids == null) ids = Array.Empty<int>();
+        if (ids == null) return;
         foreach (var id in ids)
         {
             if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == _user))
+            {
+                throw new AccessDeniedException();
+            }
+        }
+    }
+
+    public async Task ValidateEmotionCategoryAccess(params int[] ids)
+    {
+        if (ids == null) return;
+        foreach (var id in ids)
+        {
+            if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
             {
                 throw new AccessDeniedException();
             }
