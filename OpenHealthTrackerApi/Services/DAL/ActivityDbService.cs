@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 
@@ -18,19 +19,29 @@ public class ActivityDbService : IActivityDbService
         _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
-    public async Task<Activity[]> GetActivitiesByIdsAsync(int[]? ids) // TODO: replace return type with list instead of array, use a DTO
+    public async Task<List<Models.Activity>> GetActivitiesByIdsAsync(int[]? ids) 
     {
-        if (ids == null) return Array.Empty<Activity>();
+        if (ids == null) return new List<Models.Activity>();
         var activities = await _db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();
 
         if (ids.Any(x => activities.All(y => x != y.Id))) throw new KeyNotFoundException("Activity not found");
 
-        return activities.ToArray();
+        return activities.Select(x => new Models.Activity
+        {
+            Id = x.Id,
+            Name = x.Name
+        }).ToList();
     }
 
-    public async Task<Activity[]> GetActivitiesByUserAsync() // TODO: replace return type with list instead of array, use a DTO
+    public async Task<List<Models.Activity>> GetActivitiesByUserAsync() 
     {
-        return await _db.Activities.Where(x => x.User == _user).ToArrayAsync();
+        var activities = _db.Activities.Where(x => x.User == _user);
+
+        return await activities.Select(x => new Models.Activity
+        {
+            Id = x.Id,
+            Name = x.Name
+        }).ToListAsync();
     }
 
     public async Task<int> CreateActivity(string name)

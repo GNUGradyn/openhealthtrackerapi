@@ -19,14 +19,23 @@ public class EmotionDbService : IEmotionDbService
         _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
-    public async Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids) // TODO: replace return type with list instead of array, use a DTO
+    public async Task<List<Models.Emotion>> GetEmotionsByIdsAsync(int[]? ids)
     {
-        if (ids == null) return Array.Empty<Emotion>();
+        if (ids == null) return new List<Models.Emotion>();
         var emotions = await _db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();
 
         if (ids.Any(x => emotions.All(y => x != y.Id && y.UserId == _user))) throw new KeyNotFoundException("Emotion not found");
 
-        return emotions.ToArray();
+        return emotions.Select(x => new Models.Emotion
+        {
+            Category = new Models.EmotionCategory()
+            {
+                Id = x.CategoryId,
+                Name = x.Category.Name
+            },
+            Id = x.Id,
+            Name = x.Name
+        }).ToList();
     }
 
     public async Task<List<Models.Emotion>> GetEmotionsByUserAsync()

@@ -20,7 +20,7 @@ public class JournalDbService : IJournalDbService
         _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
     }
 
-    public async Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities)
+    public async Task<int> CreateEntryAsync(string text, List<Models.Emotion> emotions, List<Models.Activity> activities)
     {
         using (var dbContextTransaction = _db.Database.BeginTransaction())
         {

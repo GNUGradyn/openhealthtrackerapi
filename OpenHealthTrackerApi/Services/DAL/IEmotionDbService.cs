@@ -1,11 +1,12 @@
 ﻿using OpenHealthTrackerApi.Data.Models;
+using Emotion = OpenHealthTrackerApi.Models.Emotion;
 using EmotionCategory = OpenHealthTrackerApi.Models.EmotionCategory;
 
 namespace OpenHealthTrackerApi.Services.DAL;
 
 public interface IEmotionDbService
 {
-    Task<Emotion[]> GetEmotionsByIdsAsync(int[]? ids);
+    Task<List<Emotion>> GetEmotionsByIdsAsync(int[]? ids);
     Task<List<Models.Emotion>> GetEmotionsByUserAsync();
     Task<List<EmotionCategory>> GetEmotionCategoriesByUserAsync(bool includeEmotions = true);
     Task<int> CreateEmotionCategoryAsync(string name);
