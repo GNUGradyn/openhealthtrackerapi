@@ -19,6 +19,6 @@ public class Emotion
     public int CategoryId { get; set; }
     
     // FK relationships
-    public EmotionEntry[] Entries { get; set; }
+    public List<EmotionEntry> Entries { get; set; }
     public EmotionCategory Category { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 
@@ -28,14 +29,27 @@ public class EmotionDbService : IEmotionDbService
         return emotions.ToArray();
     }
 
-    public async Task<Emotion[]> GetEmotionsByUserAsync()
+    public async Task<Emotion[]> GetEmotionsByUserAsync() // TODO: replace return type with list instead of array
     {
         return await _db.Emotions.Where(x => x.UserId == _user).ToArrayAsync();
     }
 
-    public async Task<EmotionCategory[]> GetEmotionCategoriesByUserAsync()
+    public async Task<List<Models.EmotionCategory>> GetEmotionCategoriesByUserAsync(bool includeEmotions = true)
     {
-        return await _db.EmotionCategories.Where(x => x.User == _user).ToArrayAsync();
+        List<EmotionCategory> results;
+        if (includeEmotions)
+            results = await _db.EmotionCategories.Include(x => x.emotions).Where(x => x.User == _user).ToListAsync();
+        else results = await _db.EmotionCategories.Where(x => x.User == _user).ToListAsync();
+        return results.Select(x => new Models.EmotionCategory
+        {
+            Name = x.Name,
+            Id = x.Id,
+            emotions = x.emotions.Select(y => new Models.Emotion()
+            {
+                Name = y.Name,
+                Id = y.Id
+            }).ToList()
+        }).ToList();
     }
 
     public async Task<int> CreateEmotionCategoryAsync(string name)
