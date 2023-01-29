@@ -24,7 +24,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new AccessDeniedException();
+                throw new HttpNotFoundExeption();
             }
         }
     }
@@ -36,7 +36,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == _user))
             {
-                throw new AccessDeniedException();
+                throw new HttpNotFoundExeption();
             }
         }
     }
@@ -48,7 +48,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new AccessDeniedException();
+                throw new HttpNotFoundExeption();
             }
         }
     }
@@ -60,25 +60,8 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new AccessDeniedException();
+                throw new HttpNotFoundExeption();
             }
         }
-    }
-}
-
-public class AccessDeniedException : Exception
-{
-    public AccessDeniedException()
-    {
-    }
-
-    public AccessDeniedException(string message)
-        : base(message)
-    {
-    }
-
-    public AccessDeniedException(string message, Exception inner)
-        : base(message, inner)
-    {
     }
 }

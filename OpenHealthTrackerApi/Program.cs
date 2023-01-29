@@ -20,7 +20,8 @@ var cert = new X509Certificate2(
     Convert.FromBase64String(builder.Configuration.GetValue<string>("IdentityStore:IssuerCert")));
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+    options.Filters.Add<HttpResponseExceptionFilter>());
 builder.Services.AddScoped<IActivityDbService, ActivityDbService>();
 builder.Services.AddScoped<IEmotionDbService, EmotionDbService>();
 builder.Services.AddScoped<IJournalDbService, JournalDbService>();
@@ -66,5 +67,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// error handling
 
 app.Run();
