@@ -23,6 +23,13 @@ public class JournalController : ControllerBase
     }
 
     [HttpGet]
+    public async Task<JsonResult> GetJournalOverview()
+    {
+        var result = await _journalService.GetJournalOverviewAsync();
+        return new JsonResult(result);
+    }
+
+    [HttpGet]
     [Route("entries")]
     public async Task<JsonResult> GetEntries([FromBody] PaginatedRequest request)
     {

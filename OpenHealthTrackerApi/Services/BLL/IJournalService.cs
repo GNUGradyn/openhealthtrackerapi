@@ -1,4 +1,5 @@
 ﻿using OpenHealthTrackerApi.Data.Models;
+using OpenHealthTrackerApi.Models;
 using Activity = OpenHealthTrackerApi.Models.Activity;
 using Emotion = OpenHealthTrackerApi.Models.Emotion;
 using EmotionCategory = OpenHealthTrackerApi.Models.EmotionCategory;
@@ -20,4 +21,5 @@ public interface IJournalService
     Task DeleteEmotionAsync(int id);
     Task DeleteEmotionCategoryAsync(int id);
     Task DeleteEntryAsync(int id);
+    Task<JournalOverview> GetJournalOverviewAsync();
 }

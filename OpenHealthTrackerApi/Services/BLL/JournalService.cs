@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenHealthTrackerApi.Data.Models;
+using OpenHealthTrackerApi.Models;
 using OpenHealthTrackerApi.Services.DAL;
 using Activity = OpenHealthTrackerApi.Models.Activity;
 using Emotion = OpenHealthTrackerApi.Models.Emotion;
@@ -21,6 +22,20 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
+    public async Task<JournalOverview> GetJournalOverviewAsync()
+    {
+        var recent = await GetEntriesAsync(10, 0);
+        var activities = await GetActivitiesAsync();
+        var emotions = await GetEmotionsAsync();
+
+        return new JournalOverview
+        {
+            Recent = recent,
+            Activities = activities,
+            Emotions = emotions
+        };
+    }
+    
     public async Task<List<Models.JournalEntry>> GetEntriesAsync(int count, int start)
     {
         return await _journalDbService.GetEntriesAsync(count, start);
