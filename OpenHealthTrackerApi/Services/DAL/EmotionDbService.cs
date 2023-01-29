@@ -29,9 +29,19 @@ public class EmotionDbService : IEmotionDbService
         return emotions.ToArray();
     }
 
-    public async Task<Emotion[]> GetEmotionsByUserAsync() // TODO: replace return type with list instead of array, use a DTO
+    public async Task<List<Models.Emotion>> GetEmotionsByUserAsync()
     {
-        return await _db.Emotions.Where(x => x.UserId == _user).ToArrayAsync();
+        var results = _db.Emotions.Where(x => x.UserId == _user);
+        return await results.Select(x => new Models.Emotion
+        {
+            Category = new Models.EmotionCategory
+            {
+                Id = x.CategoryId,
+                Name = x.Category.Name
+            },
+            Name = x.Name,
+            Id = x.Id
+        }).ToListAsync();
     }
 
     public async Task<List<Models.EmotionCategory>> GetEmotionCategoriesByUserAsync(bool includeEmotions = true)

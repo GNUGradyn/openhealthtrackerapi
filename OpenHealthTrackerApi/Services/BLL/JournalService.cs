@@ -55,7 +55,7 @@ public class JournalService : IJournalService
         return result;
     }
 
-    public async Task<Emotion[]> GetEmotionsAsync()
+    public async Task<List<Models.Emotion>> GetEmotionsAsync()
     {
         return await _emotionDbService.GetEmotionsByUserAsync();
     }
