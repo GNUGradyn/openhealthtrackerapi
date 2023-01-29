@@ -16,5 +16,5 @@ public class Activity
     public Guid User { get; set; }
     
     // FK relationships
-    private ActivityEntry[] Entries { get; set; }
+    private List<ActivityEntry> Entries { get; set; }
 }

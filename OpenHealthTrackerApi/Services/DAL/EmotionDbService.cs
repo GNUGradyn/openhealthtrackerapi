@@ -22,7 +22,7 @@ public class EmotionDbService : IEmotionDbService
     public async Task<List<Models.Emotion>> GetEmotionsByIdsAsync(int[]? ids)
     {
         if (ids == null) return new List<Models.Emotion>();
-        var emotions = await _db.Emotions.Where(x => ids.Contains(x.Id)).ToListAsync();
+        var emotions = await _db.Emotions.Include(x => x.Category).Where(x => ids.Contains(x.Id)).ToListAsync();
 
         if (ids.Any(x => emotions.All(y => x != y.Id && y.UserId == _user))) throw new KeyNotFoundException("Emotion not found");
 

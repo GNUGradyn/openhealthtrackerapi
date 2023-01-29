@@ -20,6 +20,6 @@ public class JournalEntry
     public DateTime CreatedAt { get; set; }
     
     // FK relationships
-    public ActivityEntry[] Activities { get; set; }
-    public EmotionEntry[] Emotions { get; set; }
+    public List<ActivityEntry> Activities { get; set; }
+    public List<EmotionEntry> Emotions { get; set; }
 }
