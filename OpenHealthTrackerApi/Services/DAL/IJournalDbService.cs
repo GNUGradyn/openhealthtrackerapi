@@ -1,9 +1,10 @@
 ﻿using OpenHealthTrackerApi.Data.Models;
+using JournalEntry = OpenHealthTrackerApi.Models.JournalEntry;
 
 namespace OpenHealthTrackerApi.Services.DAL;
 
 public interface IJournalDbService
 {
     Task<int> CreateEntryAsync(string text, Emotion[] emotions, Activity[] activities);
-    Task<JournalEntry[]> GetEntriesAsync(int count, int start);
+    Task<List<JournalEntry>> GetEntriesAsync(int count, int start);
 }

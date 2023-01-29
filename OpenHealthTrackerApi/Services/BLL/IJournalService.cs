@@ -1,11 +1,12 @@
 ﻿using OpenHealthTrackerApi.Data.Models;
 using EmotionCategory = OpenHealthTrackerApi.Models.EmotionCategory;
+using JournalEntry = OpenHealthTrackerApi.Models.JournalEntry;
 
 namespace OpenHealthTrackerApi.Services.BLL;
 
 public interface IJournalService
 {
-    Task<JournalEntry[]> GetEntriesAsync(int count, int start);
+    Task<List<JournalEntry>> GetEntriesAsync(int count, int start);
     Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds);
     Task<Emotion[]> GetEmotionsAsync();
     Task<Activity[]> GetActivitiesAsync();

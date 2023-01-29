@@ -3,6 +3,7 @@ using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace OpenHealthTrackerApi.Services.DAL;
 
@@ -52,8 +53,23 @@ public class JournalDbService : IJournalDbService
         }
     }
     
-    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start) // TODO: replace return type with list instead of array, use a DTO
+    public async Task<List<Models.JournalEntry>> GetEntriesAsync(int count, int start)
     {
-        return await _db.JournalEntries.Where(x => x.UserId == _user).Skip(start).Take(count).ToArrayAsync();
+        var results = _db.JournalEntries.Where(x => x.UserId == _user).Skip(start).Take(count);
+        return await results.Select(x => new Models.JournalEntry
+        {
+            CreatedAt = x.CreatedAt,
+            Activities = x.Activities.Select(y => new Models.Activity
+            {
+                Id = y.Activity.Id,
+                Name = y.Activity.Name
+            }).ToList(),
+            Emotions = x.Emotions.Select(x => new Models.Emotion
+            {
+                Id = x.Emotion.Id,
+                Name = x.Emotion.Name
+            }).ToList(),
+            Id = x.Id
+        }).ToListAsync();
     }
 }

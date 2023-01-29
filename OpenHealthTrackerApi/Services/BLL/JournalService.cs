@@ -17,7 +17,7 @@ public class JournalService : IJournalService
         _journalDbService = journalDbService;
     }
 
-    public async Task<JournalEntry[]> GetEntriesAsync(int count, int start)
+    public async Task<List<Models.JournalEntry>> GetEntriesAsync(int count, int start)
     {
         return await _journalDbService.GetEntriesAsync(count, start);
     }
