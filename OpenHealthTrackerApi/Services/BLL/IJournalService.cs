@@ -14,7 +14,7 @@ public interface IJournalService
     Task<List<Emotion>> GetEmotionsAsync();
     Task<List<Activity>> GetActivitiesAsync();
     Task<List<EmotionCategory>> GetEmotionCategoriesAsync();
-    Task<int> CreateEmotionCategoryAsync(string name);
+    Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false);
     Task<int> CreateEmotionAsync(string name, int category);
     Task<int> CreateActivityAsync(string name);
     Task DeleteActivityAsync(int id);

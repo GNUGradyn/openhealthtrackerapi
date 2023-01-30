@@ -90,9 +90,9 @@ public class JournalService : IJournalService
         return await _emotionDbService.GetEmotionCategoriesByUserAsync();
     }
 
-    public async Task<int> CreateEmotionCategoryAsync(string name)
+    public async Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false)
     {
-        return await _emotionDbService.CreateEmotionCategoryAsync(name);
+        return await _emotionDbService.CreateEmotionCategoryAsync(name, allowMultiple);
     }
 
     public async Task<int> CreateEmotionAsync(string name, int category)

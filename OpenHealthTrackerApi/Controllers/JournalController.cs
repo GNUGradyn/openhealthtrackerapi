@@ -118,9 +118,9 @@ public class JournalController : ControllerBase
 
     [HttpPost]
     [Route("emotioncategories")]
-    public async Task<JsonResult> CreateEmotionCategory([FromBody] NamedObjectRequest request)
+    public async Task<JsonResult> CreateEmotionCategory([FromBody] CreateEmotionCategoryRequest request)
     {
-        var result = await _journalService.CreateEmotionCategoryAsync(request.Name);
+        var result = await _journalService.CreateEmotionCategoryAsync(request.Name, request.AllowMultiple);
         return new JsonResult(new IdResponse(result));
     }
 

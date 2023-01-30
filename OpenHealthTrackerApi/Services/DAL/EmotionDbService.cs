@@ -31,7 +31,8 @@ public class EmotionDbService : IEmotionDbService
             Category = new Models.EmotionCategory()
             {
                 Id = x.CategoryId,
-                Name = x.Category.Name
+                Name = x.Category.Name,
+                AllowMultiple = x.Category.AllowMultiple
             },
             Id = x.Id,
             Name = x.Name
@@ -46,7 +47,8 @@ public class EmotionDbService : IEmotionDbService
             Category = new Models.EmotionCategory
             {
                 Id = x.CategoryId,
-                Name = x.Category.Name
+                Name = x.Category.Name,
+                AllowMultiple = x.Category.AllowMultiple
             },
             Name = x.Name,
             Id = x.Id
@@ -63,6 +65,7 @@ public class EmotionDbService : IEmotionDbService
         {
             Name = x.Name,
             Id = x.Id,
+            AllowMultiple = x.AllowMultiple,
             emotions = x.emotions.Select(y => new Models.Emotion()
             {
                 Name = y.Name,
@@ -71,12 +74,13 @@ public class EmotionDbService : IEmotionDbService
         }).ToList();
     }
 
-    public async Task<int> CreateEmotionCategoryAsync(string name)
+    public async Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false)
     {
         var emotion = new EmotionCategory
         {
             User = _user,
-            Name = name
+            Name = name,
+            AllowMultiple = allowMultiple
         };
         await _db.EmotionCategories.AddAsync(emotion);
         await _db.SaveChangesAsync();
