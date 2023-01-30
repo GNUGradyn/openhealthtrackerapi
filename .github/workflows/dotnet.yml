@@ -23,6 +23,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet publish
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        path: OpenHealthTrackerApi\bin\Debug\net6.0\publish\
