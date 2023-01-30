@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenHealthTrackerApi.Data.Models;
 using OpenHealthTrackerApi.Models;
+using OpenHealthTrackerApi.Pipeline;
 using OpenHealthTrackerApi.Services.DAL;
 using Activity = OpenHealthTrackerApi.Models.Activity;
 using Emotion = OpenHealthTrackerApi.Models.Emotion;
@@ -51,7 +52,7 @@ public class JournalService : IJournalService
         }
         catch (KeyNotFoundException ex)
         {
-            throw new KeyNotFoundException("Emotion not found", ex);
+            throw new HttpNotFoundExeption("Emotion not found", ex);
         }
 
         if (emotions.GroupBy(x => x.Category.Id).Any(x => x.Count() > 1))
@@ -67,7 +68,7 @@ public class JournalService : IJournalService
         }
         catch (KeyNotFoundException ex)
         {
-            throw new KeyNotFoundException("Activity not found", ex);
+            throw new HttpNotFoundExeption("Activity not found", ex);
         }
 
         var result = await _journalDbService.CreateEntryAsync(text, emotions, activities);
@@ -101,7 +102,7 @@ public class JournalService : IJournalService
         {
             return await _emotionDbService.CreateEmotionAsync(name, category);
         }
-        throw new KeyNotFoundException("Category not found");
+        throw new HttpNotFoundExeption("Category not found");
     }
 
     public async Task<int> CreateActivityAsync(string name)

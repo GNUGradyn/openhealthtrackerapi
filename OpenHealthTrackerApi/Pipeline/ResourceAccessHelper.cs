@@ -24,7 +24,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.Activities.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new HttpNotFoundExeption();
+                throw new HttpNotFoundExeption("Activity not found");
             }
         }
     }
@@ -36,7 +36,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.Emotions.AnyAsync(x => x.Id == id && x.UserId == _user))
             {
-                throw new HttpNotFoundExeption();
+                throw new HttpNotFoundExeption("Emotion not found");
             }
         }
     }
@@ -48,7 +48,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new HttpNotFoundExeption();
+                throw new HttpNotFoundExeption("Emotion Category not found");
             }
         }
     }
@@ -60,7 +60,7 @@ public class ResourceAccessHelper : IResourceAccessHelper
         {
             if (!await _db.EmotionCategories.AnyAsync(x => x.Id == id && x.User == _user))
             {
-                throw new HttpNotFoundExeption();
+                throw new HttpNotFoundExeption("Entry not found");
             }
         }
     }
