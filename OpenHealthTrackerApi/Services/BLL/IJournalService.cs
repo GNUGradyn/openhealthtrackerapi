@@ -26,4 +26,5 @@ public interface IJournalService
     Task SetAllowMultipleForCategoryAsync(int id, bool value);
     Task RenameEmotionAsync(int id, string value);
     Task RenameActivityAsync(int id, string value);
+    Task MoveEmotionAsync(int id, int newCategory);
 }

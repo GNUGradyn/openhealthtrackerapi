@@ -167,9 +167,10 @@ public class EmotionDbService : IEmotionDbService
 
     public async Task ModifyEmotionAsync(int id, Models.Emotion patch)
     {
-        var emotion = await _db.Emotions.FindAsync(id);
+        var emotion = await _db.Emotions.Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
         if (emotion == null) throw new KeyNotFoundException();
         emotion.Name = patch.Name;
+        emotion.CategoryId = patch.Category.Id;
         await _db.SaveChangesAsync();
     }
 } 

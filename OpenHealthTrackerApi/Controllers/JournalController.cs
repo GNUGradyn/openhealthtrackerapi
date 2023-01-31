@@ -80,6 +80,11 @@ public class JournalController : ControllerBase
     {
         await _resourceAccessHelper.ValidateEmotionAccess(patch.Id);
         if (!string.IsNullOrWhiteSpace(patch.Name)) await _journalService.RenameEmotionAsync(patch.Id, patch.Name);
+        if (patch.Category.HasValue)
+        {
+            await _resourceAccessHelper.ValidateEmotionCategoryAccess(patch.Category.Value);
+            await _journalService.MoveEmotionAsync(patch.Id, patch.Category.Value);
+        }
         return StatusCode(204);
     }
 

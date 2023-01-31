@@ -180,4 +180,20 @@ public class JournalService : IJournalService
         activity.Name = value;
         await _activityDbService.ModifyActivity(id, activity);
     }
+
+    public async Task MoveEmotionAsync(int id, int newCategory)
+    {
+        var emotion = await _emotionDbService.GetEmotionAsync(id);
+        if (emotion == null) throw new HttpNotFoundExeption("Activity not found");
+        try
+        {
+            await _emotionDbService.GetEmotionCategoryAsync(newCategory);
+        }
+        catch (KeyNotFoundException _)
+        {
+            throw new HttpNotFoundExeption("Category not found");
+        }
+        emotion.Category.Id = newCategory;
+        await _emotionDbService.ModifyEmotionAsync(id, emotion);
+    }
 }
