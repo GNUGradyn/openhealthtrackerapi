@@ -24,4 +24,5 @@ public interface IJournalService
     Task<JournalOverview> GetJournalOverviewAsync();
     Task RenameEmotionCategoryAsync(int id, string name);
     Task SetAllowMultipleForCategoryAsync(int id, bool value);
+    Task RenameEmotionAsync(int id, string value);
 }

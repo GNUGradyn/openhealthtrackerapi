@@ -146,4 +146,30 @@ public class EmotionDbService : IEmotionDbService
             Name = category.Name
         };
     }
+
+    public async Task<Models.Emotion> GetEmotionAsync(int id)
+    {
+        var emotion = await _db.Emotions.Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
+        if (emotion == null) throw new KeyNotFoundException();
+        return new Models.Emotion
+        {
+            Category = new Models.EmotionCategory
+            {
+                AllowMultiple = emotion.Category.AllowMultiple,
+                emotions = null,
+                Id = emotion.Category.Id,
+                Name = emotion.Category.Name
+            },
+            Id = emotion.Id,
+            Name = emotion.Name
+        };
+    }
+
+    public async Task ModifyEmotionAsync(int id, Models.Emotion patch)
+    {
+        var emotion = await _db.Emotions.FindAsync(id);
+        if (emotion == null) throw new KeyNotFoundException();
+        emotion.Name = patch.Name;
+        await _db.SaveChangesAsync();
+    }
 } 

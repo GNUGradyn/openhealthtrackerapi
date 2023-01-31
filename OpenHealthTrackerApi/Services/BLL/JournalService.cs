@@ -157,4 +157,18 @@ public class JournalService : IJournalService
             throw new HttpNotFoundExeption("Category not found");
         }
     }
+
+    public async Task RenameEmotionAsync(int id, string value)
+    {
+        try
+        {
+            var emotion = await _emotionDbService.GetEmotionAsync(id);
+            emotion.Name = value;
+            await _emotionDbService.ModifyEmotionAsync(id, emotion);
+        }
+        catch (KeyNotFoundException _)
+        {
+            throw new HttpNotFoundExeption("Emotion not found");
+        }
+    }
 }

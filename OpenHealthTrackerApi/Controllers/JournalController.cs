@@ -74,6 +74,15 @@ public class JournalController : ControllerBase
         return new JsonResult(new IdResponse(results));
     }
 
+    [HttpPatch]
+    [Route("Emotions")]
+    public async Task<IActionResult> ModifyEmotion([FromBody] ModifyEmotionRequest patch)
+    {
+        await _resourceAccessHelper.ValidateEmotionAccess(patch.Id);
+        if (!string.IsNullOrWhiteSpace(patch.Name)) await _journalService.RenameEmotionAsync(patch.Id, patch.Name);
+        return StatusCode(204);
+    }
+
     [HttpDelete]
     [Route("Emotions")]
     public async Task<IActionResult> DeleteEmotion([FromQuery] int id)

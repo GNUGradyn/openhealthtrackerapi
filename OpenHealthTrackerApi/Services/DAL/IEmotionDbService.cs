@@ -15,4 +15,6 @@ public interface IEmotionDbService
     Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false);
     Task UpdateEmotionCategoryAsync(int id, Models.EmotionCategory patch);
     Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool inclueEmotions = true);
+    Task<Models.Emotion> GetEmotionAsync(int id);
+    Task ModifyEmotionAsync(int id, Models.Emotion patch);
 }
