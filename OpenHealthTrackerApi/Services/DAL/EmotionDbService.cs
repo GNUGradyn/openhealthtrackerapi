@@ -117,4 +117,33 @@ public class EmotionDbService : IEmotionDbService
         _db.Remove(category);
         await _db.SaveChangesAsync();
     }
+
+    public async Task UpdateEmotionCategoryAsync(int id, Models.EmotionCategory patch)
+    {
+        var category = await _db.EmotionCategories.FindAsync(id);
+        if (category == null) throw new KeyNotFoundException("Category not found");
+        category.Name = patch.Name;
+        category.AllowMultiple = patch.AllowMultiple;
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool includeEmotions = true)
+    {
+        EmotionCategory category;
+        if (includeEmotions) category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
+        else category = await _db.EmotionCategories.FindAsync(id);
+        if (category == null) throw new KeyNotFoundException("Category not found");
+        if (!includeEmotions) category.emotions = new List<Emotion>();
+        return new Models.EmotionCategory
+        {
+            AllowMultiple = category.AllowMultiple,
+            emotions = category.emotions.Select(x => new Models.Emotion
+            {
+                Name = x.Name,
+                Id = x.Id
+            }).ToList(),
+            Id = category.Id,
+            Name = category.Name
+        };
+    }
 } 

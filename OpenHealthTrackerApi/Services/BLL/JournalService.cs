@@ -129,4 +129,32 @@ public class JournalService : IJournalService
     {
         await _journalDbService.DeleteEntry(id);
     }
+
+    public async Task RenameEmotionCategoryAsync(int id, string name)
+    {
+        try
+        {
+            var category = await _emotionDbService.GetEmotionCategoryAsync(id, false);
+            category.Name = name;
+            await _emotionDbService.UpdateEmotionCategoryAsync(id, category);
+        }
+        catch (KeyNotFoundException _)
+        {
+            throw new HttpNotFoundExeption("Category not found");
+        }
+    }
+    
+    public async Task SetAllowMultipleForCategoryAsync(int id, bool value)
+    {
+        try
+        {
+            var category = await _emotionDbService.GetEmotionCategoryAsync(id, false);
+            category.AllowMultiple = value;
+            await _emotionDbService.UpdateEmotionCategoryAsync(id, category);
+        }
+        catch (KeyNotFoundException _)
+        {
+            throw new HttpNotFoundExeption("Category not found");
+        }
+    }
 }

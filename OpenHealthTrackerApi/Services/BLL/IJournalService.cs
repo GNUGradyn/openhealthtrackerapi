@@ -22,4 +22,6 @@ public interface IJournalService
     Task DeleteEmotionCategoryAsync(int id);
     Task DeleteEntryAsync(int id);
     Task<JournalOverview> GetJournalOverviewAsync();
+    Task RenameEmotionCategoryAsync(int id, string name);
+    Task SetAllowMultipleForCategoryAsync(int id, bool value);
 }

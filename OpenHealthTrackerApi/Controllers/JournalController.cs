@@ -124,6 +124,16 @@ public class JournalController : ControllerBase
         return new JsonResult(new IdResponse(result));
     }
 
+    [HttpPatch]
+    [Route("emotioncategories")]
+    public async Task<IActionResult> EditEmotionCategory([FromBody] PatchEmotionCategoryRequest request)
+    {
+        await _resourceAccessHelper.ValidateEmotionCategoryAccess(request.Id);
+        if (!string.IsNullOrWhiteSpace(request.Name)) await _journalService.RenameEmotionCategoryAsync(request.Id, request.Name);
+        if (request.AllowMultiple.HasValue) await _journalService.SetAllowMultipleForCategoryAsync(request.Id, request.AllowMultiple.Value);
+        return StatusCode(204);
+    }
+
     [HttpDelete]
     [Route("emotioncategories")]
     public async Task<IActionResult> DeleteEmotionCategory([FromQuery] int id)

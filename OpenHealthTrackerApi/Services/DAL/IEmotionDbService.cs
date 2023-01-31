@@ -13,4 +13,6 @@ public interface IEmotionDbService
     Task DeleteEmotionAsync(int id);
     Task DeleteEmotionCategoryAsync(int id);
     Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false);
+    Task UpdateEmotionCategoryAsync(int id, Models.EmotionCategory patch);
+    Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool inclueEmotions = true);
 }
