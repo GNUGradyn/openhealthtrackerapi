@@ -108,6 +108,15 @@ public class JournalController : ControllerBase
         return new JsonResult(new IdResponse(result));
     }
 
+    [HttpPatch]
+    [Route("activities")]
+    public async Task<IActionResult> ModifyActivity([FromBody] ModifyActivityRequest request)
+    {
+        await _resourceAccessHelper.ValidateActivityAccess(request.Id);
+        if (!string.IsNullOrWhiteSpace(request.Name)) await _journalService.RenameActivityAsync(request.Id, request.Name);
+        return StatusCode(204);
+    }
+    
     [HttpDelete]
     [Route("activities")]
     public async Task<IActionResult> DeleteActivity([FromQuery] int id)

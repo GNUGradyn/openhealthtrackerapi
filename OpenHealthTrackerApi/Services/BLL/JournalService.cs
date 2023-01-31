@@ -36,12 +36,12 @@ public class JournalService : IJournalService
             Emotions = emotions
         };
     }
-    
+
     public async Task<List<Models.JournalEntry>> GetEntriesAsync(int count, int start)
     {
         return await _journalDbService.GetEntriesAsync(count, start);
     }
-    
+
     public async Task<int> CreateEntry(string text, int[]? emotionIds, int[]? activityIds)
     {
         List<Emotion> emotions;
@@ -102,6 +102,7 @@ public class JournalService : IJournalService
         {
             return await _emotionDbService.CreateEmotionAsync(name, category);
         }
+
         throw new HttpNotFoundExeption("Category not found");
     }
 
@@ -143,7 +144,7 @@ public class JournalService : IJournalService
             throw new HttpNotFoundExeption("Category not found");
         }
     }
-    
+
     public async Task SetAllowMultipleForCategoryAsync(int id, bool value)
     {
         try
@@ -170,5 +171,13 @@ public class JournalService : IJournalService
         {
             throw new HttpNotFoundExeption("Emotion not found");
         }
+    }
+
+    public async Task RenameActivityAsync(int id, string value)
+    {
+        var activity = (await _activityDbService.GetActivitiesByIdsAsync(new[] { id })).SingleOrDefault();
+        if (activity == null) throw new HttpNotFoundExeption("Activity not found");
+        activity.Name = value;
+        await _activityDbService.ModifyActivity(id, activity);
     }
 }

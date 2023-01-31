@@ -67,4 +67,12 @@ public class ActivityDbService : IActivityDbService
         _db.Remove(activity);
         await _db.SaveChangesAsync();
     }
+
+    public async Task ModifyActivity(int id, Models.Activity patch)
+    {
+        var activity = await _db.Activities.FindAsync(id);
+        if (activity == null) throw new KeyNotFoundException("Activity not found");
+        activity.Name = patch.Name;
+        await _db.SaveChangesAsync();
+    }
 }
