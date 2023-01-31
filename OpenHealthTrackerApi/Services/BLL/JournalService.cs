@@ -55,7 +55,7 @@ public class JournalService : IJournalService
             throw new HttpNotFoundExeption("Emotion not found", ex);
         }
 
-        if (emotions.GroupBy(x => x.Category.Id).Any(x => x.Count() > 1))
+        if (emotions.GroupBy(x => x.Category.Id).Any(x => x.Count() > 1 && !x.First().Category.AllowMultiple))
         {
             throw new ArgumentException("Only 1 emotion per category is allowed");
         }
