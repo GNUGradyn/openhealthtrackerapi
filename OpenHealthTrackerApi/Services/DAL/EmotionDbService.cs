@@ -16,7 +16,56 @@ public class EmotionDbService : IEmotionDbService
     {
         _db = db;
         _httpContextAccessor = httpContextAccessor;
-        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier).Value);
+        _user = new Guid(_httpContextAccessor.HttpContext.User.Claims.Single(x => x.Type == ClaimTypes.NameIdentifier)
+            .Value);
+    }
+
+    private async Task CreateDefaultCategory()
+    {
+        if (await _db.EmotionCategories.AnyAsync(x => x.User == _user && x.Default))
+            throw new InvalidOperationException("Default category already created");
+
+        await _db.EmotionCategories.AddAsync(new EmotionCategory()
+        {
+            AllowMultiple = false,
+            User = _user,
+            Name = "Overall Mood",
+            Default = true,
+            emotions = new List<Emotion>()
+            {
+                new Emotion()
+                {
+                    Name = "Amazing",
+                    Icon = "1f601",
+                    UserId = _user
+                },
+                new Emotion()
+                {
+                    Name = "Good",
+                    Icon = "1f642",
+                    UserId = _user
+                },
+                new Emotion()
+                {
+                    Name = "Meh",
+                    Icon = "1f610",
+                    UserId = _user
+                },
+                new Emotion()
+                {
+                    Name = "Bad",
+                    Icon = "2639",
+                    UserId = _user
+                },
+                new Emotion()
+                {
+                    Name = "Awful",
+                    Icon = "1f622",
+                    UserId = _user
+                }
+            }
+        });
+        await _db.SaveChangesAsync();
     }
 
     public async Task<List<Models.Emotion>> GetEmotionsByIdsAsync(int[]? ids)
@@ -24,7 +73,8 @@ public class EmotionDbService : IEmotionDbService
         if (ids == null) return new List<Models.Emotion>();
         var emotions = await _db.Emotions.Include(x => x.Category).Where(x => ids.Contains(x.Id)).ToListAsync();
 
-        if (ids.Any(x => emotions.All(y => x != y.Id && y.UserId == _user))) throw new KeyNotFoundException("Emotion not found");
+        if (ids.Any(x => emotions.All(y => x != y.Id && y.UserId == _user)))
+            throw new KeyNotFoundException("Emotion not found");
 
         return emotions.Select(x => new Models.Emotion
         {
@@ -32,7 +82,8 @@ public class EmotionDbService : IEmotionDbService
             {
                 Id = x.CategoryId,
                 Name = x.Category.Name,
-                AllowMultiple = x.Category.AllowMultiple
+                AllowMultiple = x.Category.AllowMultiple,
+                Default = x.Category.Default
             },
             Id = x.Id,
             Name = x.Name,
@@ -43,13 +94,19 @@ public class EmotionDbService : IEmotionDbService
     public async Task<List<Models.Emotion>> GetEmotionsByUserAsync()
     {
         var results = _db.Emotions.Where(x => x.UserId == _user);
+        if (!await results.AnyAsync(x => x.Category.Default))
+        {
+            await CreateDefaultCategory();
+            return await GetEmotionsByUserAsync();
+        }
         return await results.Select(x => new Models.Emotion
         {
             Category = new Models.EmotionCategory
             {
                 Id = x.CategoryId,
                 Name = x.Category.Name,
-                AllowMultiple = x.Category.AllowMultiple
+                AllowMultiple = x.Category.AllowMultiple,
+                Default = x.Category.Default
             },
             Name = x.Name,
             Id = x.Id,
@@ -63,6 +120,11 @@ public class EmotionDbService : IEmotionDbService
         if (includeEmotions)
             results = await _db.EmotionCategories.Include(x => x.emotions).Where(x => x.User == _user).ToListAsync();
         else results = await _db.EmotionCategories.Where(x => x.User == _user).ToListAsync();
+        if (!results.Any(x => x.Default))
+        {
+            await CreateDefaultCategory();
+            return await GetEmotionCategoriesByUserAsync(includeEmotions);
+        }
         return results.Select(x => new Models.EmotionCategory
         {
             Name = x.Name,
@@ -73,17 +135,19 @@ public class EmotionDbService : IEmotionDbService
                 Name = y.Name,
                 Id = y.Id,
                 Icon = y.Icon
-            }).ToList()
+            }).ToList(),
+            Default = x.Default
         }).ToList();
     }
 
-    public async Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false)
+    public async Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false, bool _default = false)
     {
         var emotion = new EmotionCategory
         {
             User = _user,
             Name = name,
-            AllowMultiple = allowMultiple
+            AllowMultiple = allowMultiple,
+            Default = _default
         };
         await _db.EmotionCategories.AddAsync(emotion);
         await _db.SaveChangesAsync();
@@ -118,6 +182,7 @@ public class EmotionDbService : IEmotionDbService
         var category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
         if (category == null) throw new KeyNotFoundException("Category not found");
         if (category.emotions.Any()) throw new InvalidOperationException("Category not empty");
+        if (category.Default) throw new InvalidOperationException("Cannot delete default category");
         _db.Remove(category);
         await _db.SaveChangesAsync();
     }
@@ -134,7 +199,8 @@ public class EmotionDbService : IEmotionDbService
     public async Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool includeEmotions = true)
     {
         EmotionCategory category;
-        if (includeEmotions) category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
+        if (includeEmotions)
+            category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
         else category = await _db.EmotionCategories.FindAsync(id);
         if (category == null) throw new KeyNotFoundException("Category not found");
         if (!includeEmotions) category.emotions = new List<Emotion>();
@@ -148,7 +214,8 @@ public class EmotionDbService : IEmotionDbService
                 Icon = x.Icon
             }).ToList(),
             Id = category.Id,
-            Name = category.Name
+            Name = category.Name,
+            Default = category.Default
         };
     }
 
@@ -163,7 +230,8 @@ public class EmotionDbService : IEmotionDbService
                 AllowMultiple = emotion.Category.AllowMultiple,
                 emotions = null,
                 Id = emotion.Category.Id,
-                Name = emotion.Category.Name
+                Name = emotion.Category.Name,
+                Default = emotion.Category.Default
             },
             Id = emotion.Id,
             Name = emotion.Name,
@@ -179,4 +247,4 @@ public class EmotionDbService : IEmotionDbService
         emotion.CategoryId = patch.Category.Id;
         await _db.SaveChangesAsync();
     }
-} 
+}

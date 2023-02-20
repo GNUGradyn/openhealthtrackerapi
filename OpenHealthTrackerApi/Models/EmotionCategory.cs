@@ -8,4 +8,5 @@ public class EmotionCategory
     public string Name { get; set; }
     public bool AllowMultiple { get; set; }
     public List<Emotion> emotions { get; set; }
+    public bool Default { get; set; }
 }

@@ -19,6 +19,9 @@ public class EmotionCategory
     [Column("AllowMultiple")]
     public bool AllowMultiple { get; set; }
     
+    [Column("Default")]
+    public bool Default { get; set; }
+    
     // FK relationships
     public List<Emotion> emotions { get; set; }
 }

@@ -22,7 +22,7 @@ public class JournalService : IJournalService
         _emotionDbService = emotionDbService;
         _journalDbService = journalDbService;
     }
-
+    
     public async Task<JournalOverview> GetJournalOverviewAsync()
     {
         var recent = await GetEntriesAsync(10, 0);

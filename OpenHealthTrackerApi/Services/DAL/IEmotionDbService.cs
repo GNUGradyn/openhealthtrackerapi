@@ -12,9 +12,9 @@ public interface IEmotionDbService
     Task<int> CreateEmotionAsync(string name, string icon, int categoryId);
     Task DeleteEmotionAsync(int id);
     Task DeleteEmotionCategoryAsync(int id);
-    Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false);
+    Task<int> CreateEmotionCategoryAsync(string name, bool allowMultiple = false, bool _default = false);
     Task UpdateEmotionCategoryAsync(int id, Models.EmotionCategory patch);
-    Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool inclueEmotions = true);
+    Task<Models.EmotionCategory> GetEmotionCategoryAsync(int id, bool includeEmotions = true);
     Task<Models.Emotion> GetEmotionAsync(int id);
     Task ModifyEmotionAsync(int id, Models.Emotion patch);
 }
