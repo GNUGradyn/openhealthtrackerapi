@@ -70,7 +70,7 @@ public class JournalController : ControllerBase
     [Route("Emotions")]
     public async Task<JsonResult> CreateEmotion([FromBody] CreateEmotionRequest request)
     {
-        var results = await _journalService.CreateEmotionAsync(request.Name, request.Category);
+        var results = await _journalService.CreateEmotionAsync(request.Name, request.Icon, request.Category);
         return new JsonResult(new IdResponse(results));
     }
 
