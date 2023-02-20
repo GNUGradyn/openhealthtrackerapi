@@ -95,12 +95,12 @@ public class JournalService : IJournalService
         return await _emotionDbService.CreateEmotionCategoryAsync(name, allowMultiple);
     }
 
-    public async Task<int> CreateEmotionAsync(string name, int category)
+    public async Task<int> CreateEmotionAsync(string name, string icon, int category)
     {
         var categories = await GetEmotionCategoriesAsync();
         if (categories.Select(x => x.Id).Contains(category))
         {
-            return await _emotionDbService.CreateEmotionAsync(name, category);
+            return await _emotionDbService.CreateEmotionAsync(name, icon, category);
         }
 
         throw new HttpNotFoundExeption("Category not found");

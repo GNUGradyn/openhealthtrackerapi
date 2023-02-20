@@ -35,7 +35,8 @@ public class EmotionDbService : IEmotionDbService
                 AllowMultiple = x.Category.AllowMultiple
             },
             Id = x.Id,
-            Name = x.Name
+            Name = x.Name,
+            Icon = x.Icon
         }).ToList();
     }
 
@@ -51,7 +52,8 @@ public class EmotionDbService : IEmotionDbService
                 AllowMultiple = x.Category.AllowMultiple
             },
             Name = x.Name,
-            Id = x.Id
+            Id = x.Id,
+            Icon = x.Icon
         }).ToListAsync();
     }
 
@@ -69,7 +71,8 @@ public class EmotionDbService : IEmotionDbService
             emotions = x.emotions.Select(y => new Models.Emotion()
             {
                 Name = y.Name,
-                Id = y.Id
+                Id = y.Id,
+                Icon = y.Icon
             }).ToList()
         }).ToList();
     }
@@ -87,12 +90,13 @@ public class EmotionDbService : IEmotionDbService
         return emotion.Id;
     }
 
-    public async Task<int> CreateEmotionAsync(string name, int categoryId)
+    public async Task<int> CreateEmotionAsync(string name, string icon, int categoryId)
     {
         var emotion = new Emotion
         {
             CategoryId = categoryId,
             Name = name,
+            Icon = icon,
             UserId = _user
         };
 
@@ -140,7 +144,8 @@ public class EmotionDbService : IEmotionDbService
             emotions = category.emotions.Select(x => new Models.Emotion
             {
                 Name = x.Name,
-                Id = x.Id
+                Id = x.Id,
+                Icon = x.Icon
             }).ToList(),
             Id = category.Id,
             Name = category.Name
@@ -161,7 +166,8 @@ public class EmotionDbService : IEmotionDbService
                 Name = emotion.Category.Name
             },
             Id = emotion.Id,
-            Name = emotion.Name
+            Name = emotion.Name,
+            Icon = emotion.Icon
         };
     }
 
