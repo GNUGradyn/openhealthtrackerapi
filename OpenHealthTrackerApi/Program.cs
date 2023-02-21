@@ -54,7 +54,22 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
+// Configure cross-origin resource sharing
+//https://learn.microsoft.com/en-us/aspnet/core/security/cors?view=aspnetcore-7.0
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "CorsPolicy",
+        policy  =>
+        {
+            policy.WithOrigins(builder.Configuration.GetSection("AllowedOrigins").Get<string[]>())
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors("CorsPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
