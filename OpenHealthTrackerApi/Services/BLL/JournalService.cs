@@ -27,13 +27,13 @@ public class JournalService : IJournalService
     {
         var recent = await GetEntriesAsync(10, 0);
         var activities = await GetActivitiesAsync();
-        var emotions = await GetEmotionsAsync();
+        var emotionsCategories = await GetEmotionCategoriesAsync();
 
         return new JournalOverview
         {
             Recent = recent,
             Activities = activities,
-            Emotions = emotions
+            EmotionCategories = emotionsCategories
         };
     }
 
