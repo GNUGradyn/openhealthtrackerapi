@@ -1,8 +1,7 @@
 ﻿namespace OpenHealthTrackerApi.Models;
 
-public class Activity
+public class CreateActivityRequest
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public string Icon { get; set; }
 }

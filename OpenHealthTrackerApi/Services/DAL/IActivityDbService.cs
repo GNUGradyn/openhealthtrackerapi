@@ -7,7 +7,7 @@ public interface IActivityDbService
 {
     Task<List<Models.Activity>> GetActivitiesByIdsAsync(int[]? ids);
     Task<List<Activity>> GetActivitiesByUserAsync();
-    Task<int> CreateActivity(string name);
+    Task<int> CreateActivity(string name, string icon);
     Task DeleteActivity(int id);
     Task ModifyActivity(int id, Models.Activity patch);
 }

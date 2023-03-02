@@ -107,9 +107,9 @@ public class JournalController : ControllerBase
 
     [HttpPost]
     [Route("activities")]
-    public async Task<JsonResult> CreateActivity([FromBody] NamedObjectRequest request)
+    public async Task<JsonResult> CreateActivity([FromBody] CreateActivityRequest request)
     {
-        var result = await _journalService.CreateActivityAsync(request.Name);
+        var result = await _journalService.CreateActivityAsync(request.Name, request.Icon);
         return new JsonResult(new IdResponse(result));
     }
 

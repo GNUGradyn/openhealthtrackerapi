@@ -29,7 +29,8 @@ public class ActivityDbService : IActivityDbService
         return activities.Select(x => new Models.Activity
         {
             Id = x.Id,
-            Name = x.Name
+            Name = x.Name,
+            Icon = x.Icon
         }).ToList();
     }
 
@@ -40,16 +41,18 @@ public class ActivityDbService : IActivityDbService
         return await activities.Select(x => new Models.Activity
         {
             Id = x.Id,
-            Name = x.Name
+            Name = x.Name,
+            Icon = x.Icon
         }).ToListAsync();
     }
 
-    public async Task<int> CreateActivity(string name)
+    public async Task<int> CreateActivity(string name, string icon)
     {
         var activity = new Activity
         {
             Name = name,
-            User = _user
+            User = _user,
+            Icon = icon
         };
         await _db.Activities.AddAsync(activity);
         await _db.SaveChangesAsync();

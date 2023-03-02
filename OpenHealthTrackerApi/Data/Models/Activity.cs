@@ -15,6 +15,9 @@ public class Activity
     [Column("User")]
     public Guid User { get; set; }
     
+    [Column("Icon")]
+    public string Icon { get; set; }
+    
     // FK relationships
     private List<ActivityEntry> Entries { get; set; }
 }
