@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OpenHealthTrackerApi.Data;
 using OpenHealthTrackerApi.Data.Models;
 
