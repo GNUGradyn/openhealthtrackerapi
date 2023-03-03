@@ -10,4 +10,6 @@ public class Emotion
     {
         get { return Icon.StartsWith("/"); }
     }
+    
+    public string IconType { get; set; }
 }

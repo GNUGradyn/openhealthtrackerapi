@@ -36,31 +36,31 @@ public class EmotionDbService : IEmotionDbService
                 new Emotion()
                 {
                     Name = "Amazing",
-                    Icon = "1f601",
+                    Icon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f601.svg",
                     UserId = _user
                 },
                 new Emotion()
                 {
                     Name = "Good",
-                    Icon = "1f642",
+                    Icon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f642.svg",
                     UserId = _user
                 },
                 new Emotion()
                 {
                     Name = "Meh",
-                    Icon = "1f610",
+                    Icon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f610.svg",
                     UserId = _user
                 },
                 new Emotion()
                 {
                     Name = "Bad",
-                    Icon = "2639",
+                    Icon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2639.svg",
                     UserId = _user
                 },
                 new Emotion()
                 {
                     Name = "Awful",
-                    Icon = "1f622",
+                    Icon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f622.svg",
                     UserId = _user
                 }
             }
@@ -71,7 +71,7 @@ public class EmotionDbService : IEmotionDbService
     public async Task<List<Models.Emotion>> GetEmotionsByIdsAsync(int[]? ids)
     {
         if (ids == null) return new List<Models.Emotion>();
-        var emotions = await _db.Emotions.Include(x => x.Category).Where(x => ids.Contains(x.Id)).ToListAsync();
+        var emotions = await _db.Emotions.Include(x => x.IconType).Include(x => x.Category).Where(x => ids.Contains(x.Id)).ToListAsync();
 
         if (ids.Any(x => emotions.All(y => x != y.Id && y.UserId == _user)))
             throw new KeyNotFoundException("Emotion not found");
@@ -87,13 +87,14 @@ public class EmotionDbService : IEmotionDbService
             },
             Id = x.Id,
             Name = x.Name,
-            Icon = x.Icon
+            Icon = x.IconType.CDN + x.Icon,
+            IconType = x.IconType.Name
         }).ToList();
     }
 
     public async Task<List<Models.Emotion>> GetEmotionsByUserAsync()
     {
-        var results = _db.Emotions.Where(x => x.UserId == _user);
+        var results = _db.Emotions.Include(x => x.IconType).Where(x => x.UserId == _user);
         if (!await results.AnyAsync(x => x.Category.Default))
         {
             await CreateDefaultCategory();
@@ -110,7 +111,8 @@ public class EmotionDbService : IEmotionDbService
             },
             Name = x.Name,
             Id = x.Id,
-            Icon = x.Icon
+            Icon = x.IconType.CDN + x.Icon,
+            IconType = x.IconType.CDN
         }).ToListAsync();
     }
 
@@ -118,7 +120,7 @@ public class EmotionDbService : IEmotionDbService
     {
         List<EmotionCategory> results;
         if (includeEmotions)
-            results = await _db.EmotionCategories.Include(x => x.emotions).Where(x => x.User == _user).ToListAsync();
+            results = await _db.EmotionCategories.Include(x => x.emotions).ThenInclude(x => x.IconType).Where(x => x.User == _user).ToListAsync();
         else results = await _db.EmotionCategories.Where(x => x.User == _user).ToListAsync();
         if (!results.Any(x => x.Default))
         {
@@ -134,7 +136,8 @@ public class EmotionDbService : IEmotionDbService
             {
                 Name = y.Name,
                 Id = y.Id,
-                Icon = y.Icon
+                Icon = y.IconType.CDN + y.Icon,
+                IconType = y.IconType.Name
             }).ToList(),
             Default = x.Default
         }).ToList();
@@ -200,8 +203,8 @@ public class EmotionDbService : IEmotionDbService
     {
         EmotionCategory category;
         if (includeEmotions)
-            category = await _db.EmotionCategories.Include(x => x.emotions).SingleOrDefaultAsync(x => x.Id == id);
-        else category = await _db.EmotionCategories.FindAsync(id);
+            category = await _db.EmotionCategories.Include(x => x.emotions).ThenInclude(x => x.IconType).SingleOrDefaultAsync(x => x.Id == id);
+        else category = await _db.EmotionCategories.SingleOrDefaultAsync(x => x.Id == id);
         if (category == null) throw new KeyNotFoundException("Category not found");
         if (!includeEmotions) category.emotions = new List<Emotion>();
         return new Models.EmotionCategory
@@ -211,7 +214,8 @@ public class EmotionDbService : IEmotionDbService
             {
                 Name = x.Name,
                 Id = x.Id,
-                Icon = x.Icon
+                Icon = x.IconType.CDN + x.Icon,
+                IconType = x.IconType.Name
             }).ToList(),
             Id = category.Id,
             Name = category.Name,
@@ -221,7 +225,7 @@ public class EmotionDbService : IEmotionDbService
 
     public async Task<Models.Emotion> GetEmotionAsync(int id)
     {
-        var emotion = await _db.Emotions.Include(x => x.Category).SingleOrDefaultAsync(x => x.Id == id);
+        var emotion = await _db.Emotions.Include(x => x.Category).Include(x => x.IconType).SingleOrDefaultAsync(x => x.Id == id);
         if (emotion == null) throw new KeyNotFoundException();
         return new Models.Emotion
         {
@@ -235,7 +239,8 @@ public class EmotionDbService : IEmotionDbService
             },
             Id = emotion.Id,
             Name = emotion.Name,
-            Icon = emotion.Icon
+            Icon = emotion.IconType.CDN + emotion.Icon,
+            IconType = emotion.IconType.Name
         };
     }
 

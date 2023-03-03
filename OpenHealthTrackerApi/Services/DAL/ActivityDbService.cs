@@ -22,7 +22,7 @@ public class ActivityDbService : IActivityDbService
     public async Task<List<Models.Activity>> GetActivitiesByIdsAsync(int[]? ids) 
     {
         if (ids == null) return new List<Models.Activity>();
-        var activities = await _db.Activities.Where(x => ids.Contains(x.Id)).ToListAsync();
+        var activities = await _db.Activities.Include(x => x.IconType).Where(x => ids.Contains(x.Id)).ToListAsync();
 
         if (ids.Any(x => activities.All(y => x != y.Id))) throw new KeyNotFoundException("Activity not found");
 
@@ -30,19 +30,21 @@ public class ActivityDbService : IActivityDbService
         {
             Id = x.Id,
             Name = x.Name,
-            Icon = x.Icon
+            Icon = x.IconType.CDN + x.Icon,
+            IconType = x.IconType.Name
         }).ToList();
     }
 
     public async Task<List<Models.Activity>> GetActivitiesByUserAsync() 
     {
-        var activities = _db.Activities.Where(x => x.User == _user);
+        var activities = _db.Activities.Include(x => x.IconType).Where(x => x.User == _user);
 
         return await activities.Select(x => new Models.Activity
         {
             Id = x.Id,
             Name = x.Name,
-            Icon = x.Icon
+            IconType = x.IconType.Name,
+            Icon = x.IconType.CDN + x.Icon
         }).ToListAsync();
     }
 
