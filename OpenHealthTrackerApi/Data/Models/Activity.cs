@@ -17,7 +17,10 @@ public class Activity
     
     [Column("Icon")]
     public string Icon { get; set; }
+    [Column("IconType")]
+    public int IconTypeId { get; set; }
     
     // FK relationships
-    private List<ActivityEntry> Entries { get; set; }
+    public List<ActivityEntry> Entries { get; set; }
+    public IconType IconType { get; set; }
 }

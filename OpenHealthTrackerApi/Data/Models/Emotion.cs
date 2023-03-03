@@ -19,8 +19,11 @@ public class Emotion
     public int CategoryId { get; set; }
     [Column("Icon")]
     public string Icon { get; set; }
+    [Column("IconType")]
+    public int IconTypeId { get; set; }
     
     // FK relationships
     public List<EmotionEntry> Entries { get; set; }
     public EmotionCategory Category { get; set; }
+    public IconType IconType { get; set; }
 }
