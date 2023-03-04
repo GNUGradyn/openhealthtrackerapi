@@ -109,7 +109,7 @@ public class JournalController : ControllerBase
     [Route("activities")]
     public async Task<JsonResult> CreateActivity([FromBody] CreateActivityRequest request)
     {
-        var result = await _journalService.CreateActivityAsync(request.Name, request.Icon);
+        var result = await _journalService.CreateActivityAsync(request.Name, request.Icon, request.IconType);
         return new JsonResult(new IdResponse(result));
     }
 

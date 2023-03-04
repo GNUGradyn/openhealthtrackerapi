@@ -106,9 +106,9 @@ public class JournalService : IJournalService
         throw new HttpNotFoundExeption("Category not found");
     }
 
-    public async Task<int> CreateActivityAsync(string name, string icon)
+    public async Task<int> CreateActivityAsync(string name, string icon, int iconType)
     {
-        return await _activityDbService.CreateActivity(name, icon);
+        return await _activityDbService.CreateActivity(name, icon, iconType);
     }
 
     public async Task DeleteActivityAsync(int id)

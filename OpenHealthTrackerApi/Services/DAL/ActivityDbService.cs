@@ -48,13 +48,14 @@ public class ActivityDbService : IActivityDbService
         }).ToListAsync();
     }
 
-    public async Task<int> CreateActivity(string name, string icon)
+    public async Task<int> CreateActivity(string name, string icon, int IconType)
     {
         var activity = new Activity
         {
             Name = name,
             User = _user,
-            Icon = icon
+            Icon = icon,
+            IconTypeId =IconType
         };
         await _db.Activities.AddAsync(activity);
         await _db.SaveChangesAsync();
